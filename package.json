@@ -1,0 +1,36 @@
+{
+  "name": "consolog_api",
+  "version": "1.0.0",
+  "description": "About notes and stuff",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hammadaf9408/consolog.git"
+  },
+  "keywords": [],
+  "author": "Muhammad Afif",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hammadaf9408/consolog/issues"
+  },
+  "homepage": "https://github.com/hammadaf9408/consolog#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.4",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.12",
+    "morgan": "^1.9.1",
+    "slugify": "^1.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.1"
+  }
+}
