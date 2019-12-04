@@ -9,7 +9,11 @@ const {
 // const advancedResults = require('../middleware/advanceResults');
 // const NoteModel = require('../models/NoteModel');
 
-const router = express.Router({ mergeParams: true });
+// const router = express.Router({ mergeParams: true });
+const router = express.Router();
+
+const { protect } = require('../middleware/authMiddleware');
+router.use(protect);
 
 router
   .route('/')

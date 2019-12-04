@@ -6,7 +6,8 @@ const asyncHandler = require('../middleware/async');
 // @route   GET /api/v1/note
 // @access  Private
 exports.getAllNote = asyncHandler(async (req, res, next) => {
-  const notes = await Note.find();
+
+  const notes = await Note.find({ user: req.user.id });
 
   res.status(200).json({
     success: true,
@@ -27,6 +28,12 @@ exports.getSingleNote = asyncHandler(async (req, res, next) => {
     );
   }
 
+  if (note.user.toString() !== req.user.id) {
+    return next(
+      new ErrorResponse(`User is not authorize to access this note`, 401)
+    );
+  }
+
   res.status(200).json({
     success: true,
     data: note
@@ -37,6 +44,8 @@ exports.getSingleNote = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/note
 // @access  Private
 exports.createNote = asyncHandler(async (req, res, next) => {
+  req.body.user = req.user.id;
+
   const note = await Note.create(req.body);
 
   res.status(200).json({
@@ -54,6 +63,12 @@ exports.updateNote = asyncHandler(async (req, res, next) => {
   if (!note) {
     return next(
       new ErrorResponse(`Note not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  if (note.user.toString() !== req.user.id) {
+    return next(
+      new ErrorResponse(`User is not authorize to update this note`, 401)
     );
   }
 
@@ -77,6 +92,12 @@ exports.deleteNote = asyncHandler(async (req, res, next) => {
   if (!note) {
     return next(
       new ErrorResponse(`Note not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  if (note.user.toString() !== req.user.id) {
+    return next(
+      new ErrorResponse(`User is not authorize to delete this note`, 401)
     );
   }
 

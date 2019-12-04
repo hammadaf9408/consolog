@@ -30,9 +30,18 @@ const NoteSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  // createdBy: {
-  //   type: String
-  // }
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: true
+  }
 });
+
+// Process note when update
+// NoteSchema.post('findOneAndUpdate', function(doc, next) {
+//   // Running the avgrating
+//   doc.constructor.getAverageRating(doc.bootcamp);
+//   next();
+// });
 
 module.exports = mongoose.model('Note', NoteSchema);

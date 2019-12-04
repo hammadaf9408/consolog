@@ -22,8 +22,15 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email
   }
-  
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+  let user = await User.findById(req.user.id);
+
+  if (!user) {
+    return next(
+      new ErrorResponse(`User not found with id of ${req.params.id}`, 404)
+    );
+  }
+
+  user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
     runValidators: true
   });
