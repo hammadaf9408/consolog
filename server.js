@@ -19,6 +19,7 @@ const errorHandler = require('./middleware/error');
 const noteRoute = require('./routes/noteRoute');
 const authRoute = require('./routes/authRoute');
 const userRoute = require('./routes/userRoute');
+const categoryRoute = require('./routes/categoryRoute');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -75,6 +76,7 @@ app.use(hpp());
 app.use('/api/v1/note', noteRoute);
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/user', userRoute);
+app.use('/api/v1/category', categoryRoute);
 
 // Middleware it must bellow of the mount router, cause the process is linear. 
 app.use(errorHandler);
