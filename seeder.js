@@ -31,7 +31,7 @@ const notes = JSON.parse(
 const importData = async () => {
   try {
     await UserModel.create(users);
-    await NoteModel.create(notes);
+    // await NoteModel.create(notes);
 
     console.log('Data imported...'.green.inverse);
     process.exit();
@@ -43,7 +43,7 @@ const importData = async () => {
 // Delete data
 const deleteData = async () => {
   try {
-    // await UserModel.deleteMany();
+    await UserModel.deleteMany();
     await NoteModel.deleteMany();
     await CategoryModel.deleteMany();
 
