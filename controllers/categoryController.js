@@ -35,7 +35,6 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
   data.category = data.category.filter(item => item !== req.body.category);
 
-  console.log(data);
   await data.save();
 
   res.status(200).json({

@@ -43,7 +43,7 @@ const importData = async () => {
 // Delete data
 const deleteData = async () => {
   try {
-    await UserModel.deleteMany();
+    // await UserModel.deleteMany();
     await NoteModel.deleteMany();
     await CategoryModel.deleteMany();
 

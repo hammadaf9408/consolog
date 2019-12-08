@@ -18,25 +18,11 @@ const CategorySchema = new mongoose.Schema({
 CategorySchema.index({ user: 1 });
 
 // THIS ONE IS FUCKING WORK! UPDATE PAKE SAVE DAN FINDANDUPDATE EFEKNY GIMANA??
-CategorySchema.pre('save', function(next) {
-  console.log('Masuk pak ekoo');
-  if (this.isModified('category')) {
-    console.log('Ganti category');
-  }
-  next();
-});
-
-// NoteSchema.pre('findOneAndUpdate', function(next) {
+// CategorySchema.pre('save', function(next) {
 //   if (this.isModified('category')) {
 //     console.log('Ganti category');
 //   }
 //   next();
-// });
-
-// Call getAverageRating after save
-// NoteSchema.post('save', function() {
-//   // Running the avgrating
-//   this.constructor.getCategories(this.user, this.category);
 // });
 
 module.exports = mongoose.model('Category', CategorySchema);
