@@ -72,10 +72,17 @@ exports.updateNote = asyncHandler(async (req, res, next) => {
     );
   }
 
-  note = await Note.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
+  // Iterate object
+  for (let [key, value] of Object.entries(req.body)) {
+    // console.log(key, value);
+    note.set(key, value);
+  };
+
+  await note.save();
+  // note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+  //   new: true,
+  //   runValidators: true
+  // });
 
   res.status(200).json({
     success: true,

@@ -12,10 +12,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
   ) {
     // get the token by split on space then take 2nd item of the array *the token it self
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.token) {
+    token = req.cookies.token
   }
-  // else if (req.cookies.token) {
-  //   token = req.cookies.token
-  // }
 
   // Make sure token exists
   if (!token) {

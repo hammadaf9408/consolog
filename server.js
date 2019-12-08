@@ -5,6 +5,12 @@ const colors = require('colors');
 const fileupload = require('express-fileupload');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
@@ -13,6 +19,7 @@ const errorHandler = require('./middleware/error');
 const noteRoute = require('./routes/noteRoute');
 const authRoute = require('./routes/authRoute');
 const userRoute = require('./routes/userRoute');
+const categoryRoute = require('./routes/categoryRoute');
 
 // Load env vars
 dotenv.config({ path: './config/config.env' });
@@ -42,10 +49,34 @@ app.use(fileupload());
 // Set static folder, __dirname is current directory
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Sanitize Data
+app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet());
+
+// Prevent XSS attacks
+app.use(xss());
+
+// enable Cors
+app.use(cors());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+//  apply to all requests
+app.use(limiter);
+
+// Prevent http param pollution with Hpp
+app.use(hpp());
+
 // Mount routes
 app.use('/api/v1/note', noteRoute);
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/user', userRoute);
+app.use('/api/v1/category', categoryRoute);
 
 // Middleware it must bellow of the mount router, cause the process is linear. 
 app.use(errorHandler);
