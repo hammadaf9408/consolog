@@ -1,18 +1,21 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { AuthContainer, RegisterForm, LoginForm } from 'components/auth';
+import { AuthContainer, Register, Login } from 'components/auth';
 
-const App: React.FC = () => {
+import './App.css';
+
+export const App: React.FC<any> = props => {
+  
   return (
-    <Router>
-      <Switch>
-        <AuthContainer>
-          <Route path="/register" component={RegisterForm} />
-          <Route exact path="/" component={LoginForm} />
-        </AuthContainer>
-      </Switch>
-    </Router>
+    <React.Fragment>
+      <Router>
+        <Switch>
+          <AuthContainer>
+            <Route path="/register" component={Register} />
+            <Route exact path="/" component={Login} />
+          </AuthContainer>
+        </Switch>
+      </Router>
+    </React.Fragment>
   );
 };
-
-export default App;

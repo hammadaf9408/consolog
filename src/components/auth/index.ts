@@ -1,3 +1,3 @@
 export { AuthContainer } from './AuthContainer';
-export { LoginForm } from './login/LoginForm';
-export { RegisterForm } from './register/RegisterForm';
+export { Login } from './login/Login';
+export { Register } from './register/Register';
