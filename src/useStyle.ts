@@ -1,5 +1,9 @@
 import { Theme, makeStyles } from "@material-ui/core";
 
+const purpleBg = '#cfe8fc';
+const green = '#8bbabb';
+const gray = '#6c7b95';
+
 export const useStyle = makeStyles((theme: Theme) => ({
   mainContainer: {
     maxWidth: '80vw',
@@ -15,7 +19,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
 
     // For initial, delete later
-    backgroundColor: '#cfe8fc',
+    backgroundColor: purpleBg,
     height: '85vh'
   },
   leftContainer: {
@@ -23,7 +27,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#6c7b95',
+    backgroundColor: gray,
     borderRight: '1px solid black'
     // backgroundImage: 'url(/images/sign_up_1.jpg)',
     // backgroundSize: 'cover',
@@ -41,7 +45,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#8bbabb',
+    backgroundColor: green,
   },
   authField: {
     flexGrow: 1,
@@ -72,5 +76,16 @@ export const useStyle = makeStyles((theme: Theme) => ({
   },
   signUpInfo: {
     marginTop: theme.spacing(2),
+  },
+  buttonWrapper: {
+    position: 'relative',
+  },
+  buttonProgress: {
+    // color: green[500],
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -8,
+    marginLeft: -12,
   }
 }));

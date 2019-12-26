@@ -1,61 +1,87 @@
-import React, { useState } from "react";
+import React from "react";
 import { useStyle } from "useStyle";
 import { Link } from "react-router-dom";
-import { Typography, TextField, Button } from "@material-ui/core";
+import { Typography, TextField, Button, CircularProgress } from "@material-ui/core";
+import { LoginForm } from "./form/LoginForm";
+import { validateAuth } from "./form/ValidateAuth";
+import { ILogin } from "./interface";
 
-interface Props {
-}
+interface Props {}
 
 type AllProps = Props;
 
 export const Login: React.SFC<AllProps> = props => {
   const classes = useStyle();
 
-  const [name] = useState<String>('Yomamen');
+  const InitialState: ILogin = {
+    email: "",
+    password: ""
+  };
+
+  const {
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting,
+    errors,
+    values
+  } = LoginForm(InitialState, validateAuth);
 
   return (
     <div className={classes.signInForm}>
       <Typography variant="h2" style={{ marginBottom: "16px" }}>
         Sign in
       </Typography>
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextField
           className={classes.fields}
+          onBlur={handleBlur}
           label="Email"
           name="email"
-          onChange={() => {}}
+          onChange={handleChange}
           type="text"
-          // value="..."
+          value={values.email}
           variant="outlined"
         />
-        <Typography className={classes.fieldError} variant="body2">
-          Error email
-        </Typography>
-        {/* {showEmailError && (
+        {errors.email && (
           <Typography
             className={classes.fieldError}
             variant="body2"
           >
-            {errors.email[0]}
+            {errors.email}
           </Typography>
-        )} */}
+        )}
         <TextField
           className={classes.fields}
+          onBlur={handleBlur}
           label="Password"
           name="password"
-          onChange={() => {}}
+          onChange={handleChange}
           type="text"
-          // value="..."
+          value={values.password}
           variant="outlined"
         />
-        <Button
-          className={classes.signInButton}
-          color="primary"
-          size="large"
-          variant="contained"
-        >
-          Sign in now {name}
-        </Button>
+        {errors.password && (
+          <Typography
+            className={classes.fieldError}
+            variant="body2"
+          >
+            {errors.password}
+          </Typography>
+        )}
+        <div className={classes.buttonWrapper}>
+          <Button
+            className={classes.signInButton}
+            color="primary"
+            size="large"
+            variant="contained"
+            type="submit"
+            disabled={isSubmitting || !(values.email && errors.email === '' && values.password && errors.password === '')}
+          >
+            Sign in now
+          </Button>
+          {isSubmitting && <CircularProgress size={32} className={classes.buttonProgress} color="primary" />}
+        </div>
       </form>
       <div className={classes.signUpInfo}>
         <Typography>
