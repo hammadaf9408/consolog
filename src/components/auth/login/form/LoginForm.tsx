@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { ILogin } from '../interface';
+import { LoadingContext } from 'context/loading/loadingContext';
 
 export const LoginForm = (initialState: ILogin, validate: any) => {
+
+  // Context & reducer
+  const loadingContext = useContext(LoadingContext);
+  
+  const { setLoading, resetLoading } = loadingContext; 
+
   const [values, setvalues] = useState<ILogin>(initialState);
   const [errors, setErrors] = useState<ILogin>({
     email: '',
@@ -18,9 +25,11 @@ export const LoginForm = (initialState: ILogin, validate: any) => {
           password: ''
         });
         setTimeout(() => {
+          resetLoading();
           setSubmitting(false);
         }, 2000)
       } else {
+        resetLoading();
         setSubmitting(false);
       }
     }
@@ -46,6 +55,7 @@ export const LoginForm = (initialState: ILogin, validate: any) => {
       email: '',
       password: ''
     });
+    setLoading();
     setSubmitting(true);
   }
 

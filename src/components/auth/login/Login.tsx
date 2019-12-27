@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useStyle } from "useStyle";
 import { Link } from "react-router-dom";
 import { Typography, TextField, Button, CircularProgress } from "@material-ui/core";
 import { LoginForm } from "./form/LoginForm";
 import { validateAuth } from "./form/ValidateAuth";
 import { ILogin } from "./interface";
+import { LoadingContext } from "context/loading/loadingContext";
 
 interface Props {}
 
 type AllProps = Props;
 
-export const Login: React.SFC<AllProps> = props => {
+export const Login: React.FC<AllProps> = props => {
   const classes = useStyle();
+  const loadingContext = useContext(LoadingContext);
+  const { loading } = loadingContext;
 
   const InitialState: ILogin = {
     email: "",
@@ -22,7 +25,7 @@ export const Login: React.SFC<AllProps> = props => {
     handleChange,
     handleBlur,
     handleSubmit,
-    isSubmitting,
+    // isSubmitting,
     errors,
     values
   } = LoginForm(InitialState, validateAuth);
@@ -76,11 +79,11 @@ export const Login: React.SFC<AllProps> = props => {
             size="large"
             variant="contained"
             type="submit"
-            disabled={isSubmitting || !(values.email && errors.email === '' && values.password && errors.password === '')}
+            disabled={loading || !(values.email && errors.email === '' && values.password && errors.password === '')}
           >
             Sign in now
           </Button>
-          {isSubmitting && <CircularProgress size={32} className={classes.buttonProgress} color="primary" />}
+          {loading && <CircularProgress size={32} className={classes.buttonProgress} color="primary" />}
         </div>
       </form>
       <div className={classes.signUpInfo}>
