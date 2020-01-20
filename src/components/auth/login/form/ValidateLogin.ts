@@ -1,15 +1,15 @@
 import { REGEX } from "utils/Constant";
-import { ILogin } from "../interface";
+import { ILoginPayload } from "../interface";
 
-export const validateAuth = (values: ILogin, blurField: string, err?: ILogin) => {
-  const errors: ILogin = {
+export const validateLogin = (values: ILoginPayload, blurField: string, err?: ILoginPayload) => {
+  const errors: ILoginPayload = {
     email: (err && err.email) || "",
     password: (err && err.password) || ""
   };
 
 
   if (!values[blurField]) {
-    errors[blurField] = `Required ${blurField}`
+    errors[blurField] = `${blurField} is required`
   }
 
   if (blurField === 'email' && values.email) {
@@ -19,7 +19,7 @@ export const validateAuth = (values: ILogin, blurField: string, err?: ILogin) =>
       errors.email = ""
     }
   } else if (blurField === 'password' && values.password) {
-    if (values.password.length < 6) {
+    if (values.password.length < 2) {
       errors.password = "Password must be atleast 6";
     } else {
       errors.password = ""

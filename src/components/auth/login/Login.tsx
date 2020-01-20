@@ -3,9 +3,10 @@ import { useStyle } from "useStyle";
 import { Link } from "react-router-dom";
 import { Typography, TextField, Button, CircularProgress } from "@material-ui/core";
 import { LoginForm } from "./form/LoginForm";
-import { validateAuth } from "./form/ValidateAuth";
-import { ILogin } from "./interface";
+import { validateLogin } from "./form/ValidateLogin";
+import { ILoginPayload } from "./interface";
 import { LoadingContext } from "context/loading/loadingContext";
+import { ErrorContext } from "context/error/errorContext";
 
 interface Props {}
 
@@ -14,9 +15,12 @@ type AllProps = Props;
 export const Login: React.FC<AllProps> = props => {
   const classes = useStyle();
   const loadingContext = useContext(LoadingContext);
-  const { loading } = loadingContext;
+  const errorContext = useContext(ErrorContext);
 
-  const InitialState: ILogin = {
+  const { loading } = loadingContext;
+  const { error } = errorContext;
+
+  const InitialState: ILoginPayload = {
     email: "",
     password: ""
   };
@@ -25,10 +29,9 @@ export const Login: React.FC<AllProps> = props => {
     handleChange,
     handleBlur,
     handleSubmit,
-    // isSubmitting,
     errors,
     values
-  } = LoginForm(InitialState, validateAuth);
+  } = LoginForm(InitialState, validateLogin);
 
   return (
     <div className={classes.signInForm}>
@@ -38,6 +41,7 @@ export const Login: React.FC<AllProps> = props => {
       <form onSubmit={handleSubmit}>
         <TextField
           className={classes.fields}
+          disabled={loading}
           onBlur={handleBlur}
           label="Email"
           name="email"
@@ -56,11 +60,12 @@ export const Login: React.FC<AllProps> = props => {
         )}
         <TextField
           className={classes.fields}
+          disabled={loading}
           onBlur={handleBlur}
           label="Password"
           name="password"
           onChange={handleChange}
-          type="text"
+          type="password"
           value={values.password}
           variant="outlined"
         />
@@ -85,6 +90,14 @@ export const Login: React.FC<AllProps> = props => {
           </Button>
           {loading && <CircularProgress size={32} className={classes.buttonProgress} color="primary" />}
         </div>
+        {error.status !== 0 && (
+          <Typography
+            className={classes.fieldError}
+            variant="body2"
+          >
+            {error.status} - {error.statusText} : {error.message}
+          </Typography>
+        )}
       </form>
       <div className={classes.signUpInfo}>
         <Typography>
