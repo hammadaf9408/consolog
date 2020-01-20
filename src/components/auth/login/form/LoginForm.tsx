@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react'
-import { ILoginPayload, ILogin } from '../interface';
+import { ILoginPayload } from '../interface';
 import { ApiCall, Cookies } from 'middleware';
 import { API_ROUTES, LOCALNAME } from 'utils/Constant';
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ErrorContext } from 'context/error/errorContext';
 import { IError } from 'context/error/IError';
 import { AxiosResponse } from 'axios';
+import { IAuth } from 'components/auth/interface';
 
 export const LoginForm = (initialState: ILoginPayload, validate: any) => {
 
@@ -41,7 +42,7 @@ export const LoginForm = (initialState: ILoginPayload, validate: any) => {
       password: ''
     });
     setLoading();
-    let res: AxiosResponse<ILogin> = await ApiCall.post(API_ROUTES.LOGIN, values); 
+    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values); 
     if (res.status === 200 && res.data.success && res.data.token) {
       console.log('res', res);
       Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
