@@ -1,23 +1,33 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Typography,
   TextField,
   Button,
   CircularProgress
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps } from "react-router-dom";
 import { Registerform } from "./form/RegisterForm";
 import { validateRegister } from "./form/ValidateRegister";
 import { useStyle } from "useStyle";
 import { LoadingContext } from "context/loading/loadingContext";
 import { IRegister } from "./interface";
 import { ErrorContext } from "context/error/errorContext";
+import { Cookies } from "middleware";
+import { LOCALNAME } from "utils/Constant";
 
 interface Props {}
 
-type AllProps = Props;
+export type RegisterProps = RouteComponentProps & Props;
 
-export const Register: React.FC<AllProps> = props => {
+export const Register: React.FC<RegisterProps> = props => {
+
+  useEffect(() => {
+    if (Cookies.get(LOCALNAME.TOKEN)) {
+      props.history.push('/')
+    }
+    // eslint-disable-next-line
+  }, [props.history])
+  
   const classes = useStyle();
   const loadingContext = useContext(LoadingContext);
   const errorContext = useContext(ErrorContext);
@@ -38,7 +48,7 @@ export const Register: React.FC<AllProps> = props => {
     handleSubmit,
     errors,
     values
-  } = Registerform(InitialState, validateRegister);
+  } = Registerform(InitialState, validateRegister, props);
 
   const isValid = (): Boolean => {
     if (
@@ -156,7 +166,7 @@ export const Register: React.FC<AllProps> = props => {
       </form>
       <div className={classes.signUpInfo}>
         <Typography>
-          Have account ? <Link to="/">Login</Link>
+          Have account ? <Link to="/login">Login</Link>
         </Typography>
       </div>
     </div>

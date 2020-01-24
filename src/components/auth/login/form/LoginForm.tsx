@@ -7,8 +7,10 @@ import { ErrorContext } from 'context/error/errorContext';
 import { IError } from 'context/error/IError';
 import { AxiosResponse } from 'axios';
 import { IAuth } from 'components/auth/interface';
+import { LoginProps } from '../Login';
 
-export const LoginForm = (initialState: ILoginPayload, validate: any) => {
+export const LoginForm = (initialState: ILoginPayload, validate: any, props: LoginProps) => {
+  const { history } = props;
 
   // Context & reducer
   const loadingContext = useContext(LoadingContext);
@@ -44,8 +46,9 @@ export const LoginForm = (initialState: ILoginPayload, validate: any) => {
     setLoading();
     let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values); 
     if (res.status === 200 && res.data.success && res.data.token) {
-      console.log('res', res);
+      // console.log('res', res);
       Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+      history.push('/');
     } else {
       const err: IError = {
         status: res.status,

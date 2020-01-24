@@ -7,8 +7,10 @@ import { IAuth } from 'components/auth/interface';
 import { AxiosResponse } from 'axios';
 import { IError } from 'context/error/IError';
 import { ErrorContext } from 'context/error/errorContext';
+import { RegisterProps } from '../Register';
 
-export const Registerform = (initialState: IRegister, validate: any) => {
+export const Registerform = (initialState: IRegister, validate: any, props: RegisterProps) => {
+  const { history } = props;
 
   // Context & reducer
   const loadingContext = useContext(LoadingContext);
@@ -54,8 +56,9 @@ export const Registerform = (initialState: IRegister, validate: any) => {
 
     let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.REGISTER, payload);
     if (res.status === 200 && res.data.success && res.data.token) {
-      console.log('register', res);
+      // console.log('register', res);
       Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+      history.push('/');
     } else {
       const err: IError = {
         status: res.status,
