@@ -6,4 +6,4 @@ export interface ILoadingContext extends ILoading {
   resetLoading: () => void;
 }
 
-export const LoadingContext = createContext<ILoadingContext | any>({});
+export const LoadingContext = createContext({} as ILoadingContext);
