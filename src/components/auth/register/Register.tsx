@@ -20,14 +20,13 @@ interface Props {}
 export type RegisterProps = RouteComponentProps & Props;
 
 export const Register: React.FC<RegisterProps> = props => {
-
   useEffect(() => {
     if (Cookies.get(LOCALNAME.TOKEN)) {
-      props.history.push('/')
+      props.history.push("/");
     }
     // eslint-disable-next-line
-  }, [props.history])
-  
+  }, [props.history]);
+
   const classes = useStyle();
   const loadingContext = useContext(LoadingContext);
   const errorContext = useContext(ErrorContext);
@@ -52,16 +51,20 @@ export const Register: React.FC<RegisterProps> = props => {
 
   const isValid = (): Boolean => {
     if (
-      values.name && errors.name === '' &&
-      values.email && errors.email === '' &&
-      values.password && errors.password === '' &&
-      values.confirmPassword && errors.confirmPassword === ''
+      values.name &&
+      errors.name === "" &&
+      values.email &&
+      errors.email === "" &&
+      values.password &&
+      errors.password === "" &&
+      values.confirmPassword &&
+      errors.confirmPassword === ""
     ) {
       return true;
     }
 
     return false;
-  }
+  };
 
   return (
     <div className={classes.signInForm}>
@@ -140,10 +143,7 @@ export const Register: React.FC<RegisterProps> = props => {
             size="large"
             variant="contained"
             type="submit"
-            disabled={
-              loading ||
-              !isValid()
-            }
+            disabled={loading || !isValid()}
           >
             Sign up
           </Button>
@@ -155,12 +155,9 @@ export const Register: React.FC<RegisterProps> = props => {
             />
           )}
         </div>
-        {error.status !== 0 && (
-          <Typography
-            className={classes.fieldError}
-            variant="body2"
-          >
-            {error.status} - {error.statusText} : {error.message}
+        {error?.status !== 0 && (
+          <Typography className={classes.fieldError} variant="body2">
+            {error?.status} - {error?.statusText} : {error?.message}
           </Typography>
         )}
       </form>

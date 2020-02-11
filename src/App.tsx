@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, RouteProps, Redirect } from 'react-router-dom';
-import { Register, Login } from 'components/auth';
+import { Register, Login, AuthContainer } from 'components/auth';
 import { LoadingState } from 'context/loading/LoadingState';
 import { ErrorState } from 'context/error/ErrorState';
 import { Cookies } from 'middleware';
 import { LOCALNAME } from 'utils/Constant';
 import { Home } from 'components/dashboard/home/Home';
-import './App.css';
 import { GlobalContainer } from 'components/container/GlobalContainer';
+import './App.css';
 
 interface IPrivateRoute extends RouteProps {
   component: any;
@@ -38,9 +38,11 @@ export const App: React.FC<any> = props => {
           <Router>
             <Switch>
               <GlobalContainer>
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/register" component={Register} />
-                <PrivateRoute path="/" component={Home} />
+              <PrivateRoute path="/" component={Home} />
+                <AuthContainer>
+                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/register" component={Register} />
+                </AuthContainer>
               </GlobalContainer>
             </Switch>
           </Router>

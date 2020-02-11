@@ -4,6 +4,8 @@ const purpleBg = '#cfe8fc';
 const green = '#8bbabb';
 const gray = '#6c7b95';
 
+const drawerWidth = '33.3%';
+
 export const useStyle = makeStyles((theme: Theme) => ({
   mainContainer: {
     maxWidth: '80vw',
@@ -87,5 +89,27 @@ export const useStyle = makeStyles((theme: Theme) => ({
     left: '50%',
     marginTop: -8,
     marginLeft: -12,
-  }
+  },
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+  },
+  drawerPaper: {
+    width: drawerWidth,
+    background: gray
+  },
+  appBar: {
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth})`,
+      // marginLeft: drawerWidth,
+    },
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
 }));
