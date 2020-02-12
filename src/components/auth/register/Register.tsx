@@ -1,19 +1,24 @@
 import React, { useContext, useEffect } from "react";
 import {
   Typography,
-  TextField,
   Button,
-  CircularProgress
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText
 } from "@material-ui/core";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { Registerform } from "./form/RegisterForm";
-import { validateRegister } from "./form/ValidateRegister";
 import { useStyle } from "useStyle";
 import { LoadingContext } from "context/loading/loadingContext";
-import { IRegister } from "./interface";
+import { IRegisterPayload } from "./interface";
 import { ErrorContext } from "context/error/errorContext";
-import { Cookies } from "middleware";
-import { LOCALNAME } from "utils/Constant";
+import { Cookies, ApiCall } from "middleware";
+import { LOCALNAME, API_ROUTES, REGEX } from "utils/Constant";
+import { useForm } from "react-hook-form";
+import { AxiosResponse } from "axios";
+import { IAuth } from "../interface";
+import { IError } from "context/error/IError";
 
 interface Props {}
 
@@ -27,43 +32,52 @@ export const Register: React.FC<RegisterProps> = props => {
     // eslint-disable-next-line
   }, [props.history]);
 
+  const { history } = props;
   const classes = useStyle();
   const loadingContext = useContext(LoadingContext);
   const errorContext = useContext(ErrorContext);
 
-  const { loading } = loadingContext;
-  const { error } = errorContext;
+  const { loading, setLoading, resetLoading } = loadingContext;
+  const { error, setError } = errorContext;
 
-  const InitialState: IRegister = {
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: ""
-  };
-
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    errors,
-    values
-  } = Registerform(InitialState, validateRegister, props);
-
-  const isValid = (): Boolean => {
-    if (
-      values.name &&
-      errors.name === "" &&
-      values.email &&
-      errors.email === "" &&
-      values.password &&
-      errors.password === "" &&
-      values.confirmPassword &&
-      errors.confirmPassword === ""
-    ) {
-      return true;
+  const { handleSubmit, register, errors, watch } = useForm<IRegisterPayload>({
+    mode: "onChange",
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
     }
+  });
 
-    return false;
+  // const password: string = watch("password");
+
+  useEffect(() => {
+    console.log('err', errors);
+  })
+
+  const onSubmit = async (values: IRegisterPayload) => {
+    setLoading();
+    const payload = {
+      name: values.name,
+      email: values.email,
+      password: values.password
+    };
+
+    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.REGISTER, payload);
+    if (res.status === 200 && res.data.success && res.data.token) {
+      // console.log('register', res);
+      Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+      history.push('/');
+    } else {
+      const err: IError = {
+        status: res.status,
+        statusText: res.statusText,
+        message: res.data.error || 'Error'
+      }
+      setError(err);
+    }
+    resetLoading();
   };
 
   return (
@@ -71,71 +85,78 @@ export const Register: React.FC<RegisterProps> = props => {
       <Typography variant="h2" style={{ marginBottom: "16px" }}>
         Sign up
       </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          className={classes.fields}
-          disabled={loading}
-          onBlur={handleBlur}
-          label="Name"
-          name="name"
-          onChange={handleChange}
-          type="text"
-          value={values.name}
-          variant="outlined"
-        />
-        {errors.name && (
-          <Typography className={classes.fieldError} variant="body2">
-            {errors.name}
-          </Typography>
-        )}
-        <TextField
-          className={classes.fields}
-          disabled={loading}
-          onBlur={handleBlur}
-          label="Email"
-          name="email"
-          onChange={handleChange}
-          type="text"
-          value={values.email}
-          variant="outlined"
-        />
-        {errors.email && (
-          <Typography className={classes.fieldError} variant="body2">
-            {errors.email}
-          </Typography>
-        )}
-        <TextField
-          className={classes.fields}
-          disabled={loading}
-          onBlur={handleBlur}
-          label="Password"
-          name="password"
-          onChange={handleChange}
-          type="password"
-          value={values.password}
-          variant="outlined"
-        />
-        {errors.password && (
-          <Typography className={classes.fieldError} variant="body2">
-            {errors.password}
-          </Typography>
-        )}
-        <TextField
-          className={classes.fields}
-          disabled={loading}
-          onBlur={handleBlur}
-          label="Confirmation Password"
-          name="confirmPassword"
-          onChange={handleChange}
-          type="password"
-          value={values.confirmPassword}
-          variant="outlined"
-        />
-        {errors.confirmPassword && (
-          <Typography className={classes.fieldError} variant="body2">
-            {errors.confirmPassword}
-          </Typography>
-        )}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl variant="outlined" error={!!(errors.name)} className={classes.fields}>
+          <InputLabel>Name</InputLabel>
+          <OutlinedInput
+            disabled={loading}
+            type="text"
+            label="Name"
+            name="name"
+            inputRef={register({required: true})}
+            error={!!(errors.name)}
+          />
+          {errors.name && (
+            <FormHelperText>{errors.name.type === 'required' ? 'Name is required' : errors.name.message}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl variant="outlined" error={!!(errors.email)} className={classes.fields}>
+          <InputLabel>Email</InputLabel>
+          <OutlinedInput
+            disabled={loading}
+            type="text"
+            label="Email"
+            name="email"
+            inputRef={register({
+              required: true,
+              pattern: {
+                value: REGEX.EMAIL,
+                message: "Invalid email address"
+              }
+            })}
+            error={!!(errors.email)}
+          />
+          {errors.email && (
+            <FormHelperText>{errors.email.type === 'required' ? 'Email is required' : errors.email.message}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl variant="outlined" error={!!(errors.password)} className={classes.fields}>
+          <InputLabel>Password</InputLabel>
+          <OutlinedInput
+            disabled={loading}
+            type="password"
+            label="Password"
+            name="password"
+            inputRef={register({
+              required: true,
+              minLength: {
+                value: 6,
+                message: 'Password must be atleast 6'
+              }
+            })}
+            error={!!(errors.password)}
+          />
+          {errors.password && (
+            <FormHelperText>{errors.password.type === 'required' ? 'Password is required' : errors.password.message}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl variant="outlined" error={!!(errors.confirmPassword)} className={classes.fields}>
+          <InputLabel>Confirmation Password</InputLabel>
+          <OutlinedInput
+            disabled={loading}
+            type="password"
+            label="Confirmation Password"
+            name="confirmPassword"
+            inputRef={register({
+              required: true,
+              validate: value => value === watch("password") || "Password doesn't match"
+            })}
+            error={!!(errors.confirmPassword)}
+          />
+          {errors.confirmPassword && (
+            <FormHelperText>{errors.confirmPassword.type === 'required' ? 'Confirmation Password is required' : errors.confirmPassword.message}</FormHelperText>
+          )}
+        </FormControl>
         <div className={classes.buttonWrapper}>
           <Button
             className={classes.signInButton}
@@ -143,7 +164,7 @@ export const Register: React.FC<RegisterProps> = props => {
             size="large"
             variant="contained"
             type="submit"
-            disabled={loading || !isValid()}
+            disabled={loading}
           >
             Sign up
           </Button>

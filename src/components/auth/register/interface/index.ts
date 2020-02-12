@@ -1,1 +1,1 @@
-export * from './IRegister';
+export * from './IRegisterPayload';

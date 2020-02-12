@@ -37,7 +37,7 @@ export const LoginForm = (initialState: ILoginPayload, validate: any, props: Log
     setValidation(validationErrors);
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setValidation({
       email: '',
@@ -63,7 +63,7 @@ export const LoginForm = (initialState: ILoginPayload, validate: any, props: Log
   return {
     handleChange,
     handleBlur,
-    handleSubmit,
+    onSubmit,
     errors,
     values
   }

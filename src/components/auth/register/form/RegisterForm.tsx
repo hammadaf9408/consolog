@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { IRegister } from '../interface';
+import { IRegisterPayload } from '../interface';
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ApiCall, Cookies } from 'middleware';
 import { API_ROUTES, LOCALNAME } from 'utils/Constant';
@@ -9,7 +9,7 @@ import { IError } from 'context/error/IError';
 import { ErrorContext } from 'context/error/errorContext';
 import { RegisterProps } from '../Register';
 
-export const Registerform = (initialState: IRegister, validate: any, props: RegisterProps) => {
+export const Registerform = (initialState: IRegisterPayload, validate: any, props: RegisterProps) => {
   const { history } = props;
 
   // Context & reducer
@@ -19,8 +19,8 @@ export const Registerform = (initialState: IRegister, validate: any, props: Regi
   const { setLoading, resetLoading } = loadingContext; 
   const { setError } = errorContext; 
 
-  const [values, setvalues] = useState<IRegister>(initialState);
-  const [errors, setErrors] = useState<IRegister>({
+  const [values, setvalues] = useState<IRegisterPayload>(initialState);
+  const [errors, setErrors] = useState<IRegisterPayload>({
     name: '',
     email: '',
     password: '',

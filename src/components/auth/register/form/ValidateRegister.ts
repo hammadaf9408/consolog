@@ -1,8 +1,8 @@
 import { REGEX } from "utils/Constant";
-import { IRegister } from "../interface";
+import { IRegisterPayload } from "../interface";
 
-export const validateRegister = (values: IRegister, blurField: string, err?: IRegister) => {
-  const errors: IRegister = {
+export const validateRegister = (values: IRegisterPayload, blurField: string, err?: IRegisterPayload) => {
+  const errors: IRegisterPayload = {
     name: (err && err.name) || "",
     email: (err && err.email) || "",
     password: (err && err.password) || "",
