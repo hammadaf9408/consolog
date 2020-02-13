@@ -30,7 +30,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: gray,
-    borderRight: '1px solid black'
+    borderRight: '1px solid #464159'
     // backgroundImage: 'url(/images/sign_up_1.jpg)',
     // backgroundSize: 'cover',
     // backgroundRepeat: 'no-repeat',
@@ -83,7 +83,6 @@ export const useStyle = makeStyles((theme: Theme) => ({
     position: 'relative',
   },
   buttonProgress: {
-    // color: green[500],
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -98,12 +97,19 @@ export const useStyle = makeStyles((theme: Theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    background: gray
+    background: green
   },
-  appBar: {
+  leftAppBar: {
+    [theme.breakpoints.up('sm')]: {
+      width: drawerWidth,
+      left: 0,
+      zIndex: theme.zIndex.drawer + 1,
+    },
+  },
+  rightAppBar: {
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth})`,
-      // marginLeft: drawerWidth,
+      zIndex: theme.zIndex.drawer + 1,
     },
   },
   menuButton: {
@@ -112,4 +118,5 @@ export const useStyle = makeStyles((theme: Theme) => ({
       display: 'none',
     },
   },
+  toolbar: theme.mixins.toolbar
 }));

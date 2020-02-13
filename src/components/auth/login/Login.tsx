@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { AxiosResponse } from "axios";
 import { IAuth } from "../interface";
 import { IError } from "context/error/IError";
+import { AuthContainer } from "../AuthContainer";
 
 interface Props {}
 
@@ -71,81 +72,83 @@ export const Login: React.FC<LoginProps> = props => {
   // });
 
   return (
-    <div className={classes.signInForm}>
-      <Typography variant="h2" style={{ marginBottom: "16px" }}>
-        Sign in
-      </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl variant="outlined" error={!!(errors.email)} className={classes.fields}>
-          <InputLabel>Email</InputLabel>
-          <OutlinedInput
-            disabled={loading}
-            type="text"
-            label="Email"
-            name="email"
-            inputRef={register({
-              required: true,
-              pattern: {
-                value: REGEX.EMAIL,
-                message: "Invalid email address"
-              }
-            })}
-            error={!!(errors.email)}
-          />
-          {errors.email && (
-            <FormHelperText>{errors.email.type === 'required' ? 'Email is required' : errors.email.message}</FormHelperText>
-          )}
-        </FormControl>
-        <FormControl variant="outlined" error={!!(errors.password)} className={classes.fields}>
-          <InputLabel>Password</InputLabel>
-          <OutlinedInput
-            disabled={loading}
-            type="password"
-            label="Password"
-            name="password"
-            inputRef={register({
-              required: true,
-              minLength: {
-                value: 6,
-                message: 'Password must be atleast 6'
-              }
-            })}
-            error={!!(errors.password)}
-          />
-          {errors.password && (
-            <FormHelperText>{errors.password.type === 'required' ? 'Password is required' : errors.password.message}</FormHelperText>
-          )}
-        </FormControl>
-        <div className={classes.buttonWrapper}>
-          <Button
-            className={classes.signInButton}
-            color="primary"
-            size="large"
-            variant="contained"
-            type="submit"
-            disabled={loading}
-          >
-            Sign in now
-          </Button>
-          {loading && (
-            <CircularProgress
-              size={32}
-              className={classes.buttonProgress}
-              color="primary"
-            />
-          )}
-        </div>
-        {error?.status !== 0 && (
-          <Typography className={classes.fieldError} variant="body2">
-            {error?.status} - {error?.statusText} : {error?.message}
-          </Typography>
-        )}
-      </form>
-      <div className={classes.signUpInfo}>
-        <Typography>
-          Don't have account? <Link to="/register">Sign up</Link>
+    <AuthContainer>      
+      <div className={classes.signInForm}>
+        <Typography variant="h2" style={{ marginBottom: "16px" }}>
+          Sign in
         </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl variant="outlined" error={!!(errors.email)} className={classes.fields}>
+            <InputLabel>Email</InputLabel>
+            <OutlinedInput
+              disabled={loading}
+              type="text"
+              label="Email"
+              name="email"
+              inputRef={register({
+                required: true,
+                pattern: {
+                  value: REGEX.EMAIL,
+                  message: "Invalid email address"
+                }
+              })}
+              error={!!(errors.email)}
+            />
+            {errors.email && (
+              <FormHelperText>{errors.email.type === 'required' ? 'Email is required' : errors.email.message}</FormHelperText>
+            )}
+          </FormControl>
+          <FormControl variant="outlined" error={!!(errors.password)} className={classes.fields}>
+            <InputLabel>Password</InputLabel>
+            <OutlinedInput
+              disabled={loading}
+              type="password"
+              label="Password"
+              name="password"
+              inputRef={register({
+                required: true,
+                minLength: {
+                  value: 6,
+                  message: 'Password must be atleast 6'
+                }
+              })}
+              error={!!(errors.password)}
+            />
+            {errors.password && (
+              <FormHelperText>{errors.password.type === 'required' ? 'Password is required' : errors.password.message}</FormHelperText>
+            )}
+          </FormControl>
+          <div className={classes.buttonWrapper}>
+            <Button
+              className={classes.signInButton}
+              color="primary"
+              size="large"
+              variant="contained"
+              type="submit"
+              disabled={loading}
+            >
+              Sign in now
+            </Button>
+            {loading && (
+              <CircularProgress
+                size={32}
+                className={classes.buttonProgress}
+                color="primary"
+              />
+            )}
+          </div>
+          {error?.status !== 0 && (
+            <Typography className={classes.fieldError} variant="body2">
+              {error?.status} - {error?.statusText} : {error?.message}
+            </Typography>
+          )}
+        </form>
+        <div className={classes.signUpInfo}>
+          <Typography>
+            Don't have account? <Link to="/register">Sign up</Link>
+          </Typography>
+        </div>
       </div>
-    </div>
+    </AuthContainer>
   );
 };

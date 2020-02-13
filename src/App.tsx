@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, RouteProps, Redirect } from 'react-router-dom';
-import { Register, Login, AuthContainer } from 'components/auth';
+import { Register, Login } from 'components/auth';
 import { LoadingState } from 'context/loading/LoadingState';
 import { ErrorState } from 'context/error/ErrorState';
 import { Cookies } from 'middleware';
@@ -39,10 +39,10 @@ export const App: React.FC<any> = props => {
             <Switch>
               <GlobalContainer>
               <PrivateRoute path="/" component={Home} />
-                <AuthContainer>
+                {/* <AuthContainer> */}
                   <Route exact path="/login" component={Login} />
                   <Route exact path="/register" component={Register} />
-                </AuthContainer>
+                {/* </AuthContainer> */}
               </GlobalContainer>
             </Switch>
           </Router>
