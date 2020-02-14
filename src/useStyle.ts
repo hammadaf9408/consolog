@@ -1,28 +1,35 @@
 import { Theme, makeStyles } from "@material-ui/core";
 
-const purpleBg = '#cfe8fc';
+const purpleBg = '#464159';
 const green = '#8bbabb';
 const gray = '#6c7b95';
 
 const drawerWidth = '33.3%';
+const gridXl2 = '16.666667%';
+// const gridXl10 = '83.333333%';
 
 export const useStyle = makeStyles((theme: Theme) => ({
+  toolbar: theme.mixins.toolbar,
   mainContainer: {
-    maxWidth: '80vw',
-    maxHeight: '85vh',
-    margin: '0',
+    height: '100vh',
     padding: '0',
-    overflow: 'hidden',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    borderRadius: theme.spacing(1),
-    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-
-    // For initial, delete later
-    backgroundColor: purpleBg,
-    height: '85vh'
+    [theme.breakpoints.up('lg')]: {
+      maxWidth: '80vw',
+      maxHeight: '85vh',
+      margin: '0',
+      // padding: '0',
+      overflow: 'hidden',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      borderRadius: theme.spacing(1),
+      boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+  
+      // For initial, delete later
+      // backgroundColor: purpleBg,
+      height: '85vh'
+    },
   },
   leftContainer: {
     height: '100%',
@@ -96,8 +103,10 @@ export const useStyle = makeStyles((theme: Theme) => ({
     },
   },
   drawerPaper: {
-    width: drawerWidth,
-    background: green
+    width: `calc(${drawerWidth} - ${gridXl2})`,
+    background: green,
+    // position: 'inherit'
+    left: 'auto'
   },
   leftAppBar: {
     [theme.breakpoints.up('sm')]: {
@@ -118,5 +127,35 @@ export const useStyle = makeStyles((theme: Theme) => ({
       display: 'none',
     },
   },
-  toolbar: theme.mixins.toolbar
+  fabIcon: {
+    margin: '12px auto'
+  },
+  fabSetting: {
+    position: 'absolute', 
+    transform: 'translateX(-50%)', 
+    bottom: '20px'
+  },
+  paperNote: {
+    height: '100%',
+    overflowX: 'auto',
+    marginTop: '4px',
+    background: green,
+    '&::-webkit-scrollbar': {
+      width: '5px'
+    },
+    '&::-webkit-scrollbar-track': {
+      background: green
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: gray
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: purpleBg
+    }
+  },
+  textElipsis: {
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis'
+  }
 }));

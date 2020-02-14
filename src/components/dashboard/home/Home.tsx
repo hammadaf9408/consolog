@@ -3,25 +3,19 @@ import {
   Typography,
   Button,
   Grid,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Hidden,
   Drawer,
   useTheme,
   AppBar,
   Toolbar,
   IconButton,
-  // ListSubheader
+  Paper
 } from "@material-ui/core";
 import { Cookies } from "middleware";
 import { LOCALNAME } from "utils/Constant";
 import { useStyle } from "useStyle";
-import MailIcon from "@material-ui/icons/Mail";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MenuIcon from "@material-ui/icons/Menu";
+import { Menu, NoteList } from "../leftContainer";
 
 export const Home: React.FC<any> = props => {
   const classes = useStyle();
@@ -38,25 +32,12 @@ export const Home: React.FC<any> = props => {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
-    <div>
-      <Divider />
-      <List>  
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
   return (
     <React.Fragment>
       <Grid container spacing={0} style={{ height: "100%" }}>
+        {/* Website Mode */}
         <Hidden xsDown>
-          <Grid item xs={12} sm={4} md={4} lg={4} xl={4}>
+          <Grid item sm={4} md={4} lg={4} xl={4} style={{ height: "100%" }}>
             <div className={classes.leftContainer}>
               <AppBar position="fixed" className={classes.leftAppBar}>
                 <Toolbar>
@@ -74,20 +55,33 @@ export const Home: React.FC<any> = props => {
                   </Typography>
                 </Toolbar>
               </AppBar>
-              {/* Website Mode */}
-                <Drawer
-                  classes={{
-                    paper: classes.drawerPaper,
-                  }}
-                  variant="permanent"
-                  open
-                >
+              <Grid container spacing={0} style={{ height: "100%" }}>
+                <Grid item sm={2} md={2} lg={2} xl={2} style={{ height: "100%" }} >
                   <div className={classes.toolbar} />
-                  {drawer}
-                </Drawer>
+                  <Menu />
+                </Grid>
+                <Grid item sm={10} md={10} lg={10} xl={10} style={{ height: "100%" }}>
+                  <Paper className={classes.paperNote}>
+                    <div className={classes.toolbar} />
+                    <NoteList />
+                  </Paper>
+                  {/* <Drawer
+                    style={{ height: "100%" }}
+                    classes={{
+                      paper: classes.drawerPaper,
+                    }}
+                    variant="permanent"
+                    open
+                  >
+                    <div className={classes.toolbar} />
+                    <NoteList />
+                  </Drawer> */}
+                </Grid>
+              </Grid>
             </div>
           </Grid>
         </Hidden>
+
         {/* Mobile mode */}
         <Hidden smUp>
           <Drawer
@@ -102,7 +96,7 @@ export const Home: React.FC<any> = props => {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            {drawer}
+            <NoteList />
           </Drawer>
         </Hidden>
         <Grid item xs={12} sm={8} md={8} lg={8} xl={8}>

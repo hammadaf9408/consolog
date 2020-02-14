@@ -38,11 +38,9 @@ export const App: React.FC<any> = props => {
           <Router>
             <Switch>
               <GlobalContainer>
-              <PrivateRoute path="/" component={Home} />
-                {/* <AuthContainer> */}
-                  <Route exact path="/login" component={Login} />
-                  <Route exact path="/register" component={Register} />
-                {/* </AuthContainer> */}
+                <PrivateRoute path="/" component={Home} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/register" component={Register} />
               </GlobalContainer>
             </Switch>
           </Router>
