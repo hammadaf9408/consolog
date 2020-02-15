@@ -157,5 +157,8 @@ export const useStyle = makeStyles((theme: Theme) => ({
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis'
+  },
+  skeleton: {
+    backgroundColor: `${gray} !important`
   }
 }));
