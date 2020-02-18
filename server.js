@@ -58,8 +58,19 @@ app.use(helmet());
 // Prevent XSS attacks
 app.use(xss());
 
+var whitelist = ['http://localhost:3006']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
 // enable Cors
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
