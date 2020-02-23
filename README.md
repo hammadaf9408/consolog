@@ -14,5 +14,5 @@ Unlike the API, it's not deployed at all. I hope to be deploying it soon
 Since it's still under development, you can access the thing that I created on the branch *client/playground*
 I still have many todo list for the client.
 
-## LICENSE
+## License
 [MIT](https://choosealicense.com/licenses/mit/)
