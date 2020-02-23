@@ -4,7 +4,7 @@ the project it self is still under developement
 
 ## Backend / API
 API has been deployed on heroku. you can access it here
-https://clog-io.herokuapp.com/
+[Clog-io](https://clog-io.herokuapp.com/)
 will continue to be updated as needed.
 the one that I deploy is on the branch *api/deployed* and I always explore things on *api/playground*
 
