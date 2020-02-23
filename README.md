@@ -16,5 +16,3 @@ I still have many todo list for the client.
 
 ## LICENSE
 [MIT](https://choosealicense.com/licenses/mit/)
-
-## Thanks
