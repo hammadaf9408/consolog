@@ -22,7 +22,12 @@ const API_ROUTES = {
 
 const REGEX = {
   // EMAIL : /^\S+@\S+\.\S+$/
-  EMAIL: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+  EMAIL: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+  PASSWORD: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
+  SIXCHAR: /.{6,20}/,
+  NUMBER: /\d/,
+  LOWERCASE: /[a-z]/,
+  UPPERCASE: /[A-Z]/
 }
 
 const LOCALNAME = {
