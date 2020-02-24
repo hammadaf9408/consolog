@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Typography,
   Button,
@@ -6,7 +6,9 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
-  FormHelperText
+  FormHelperText,
+  InputAdornment,
+  IconButton,
 } from "@material-ui/core";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { useStyle } from "useStyle";
@@ -20,6 +22,8 @@ import { AxiosResponse } from "axios";
 import { IAuth } from "../interface";
 import { IError } from "context/error/IError";
 import { AuthContainer } from "../AuthContainer";
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 interface Props {}
 
@@ -28,7 +32,7 @@ export type RegisterProps = RouteComponentProps & Props;
 export const Register: React.FC<RegisterProps> = props => {
   useEffect(() => {
     if (Cookies.get(LOCALNAME.TOKEN)) {
-      props.history.push("/");
+      props.history.push("/home");
     }
     // eslint-disable-next-line
   }, [props.history]);
@@ -51,9 +55,9 @@ export const Register: React.FC<RegisterProps> = props => {
     }
   });
 
-  // useEffect(() => {
-  //   console.log('err', errors);
-  // })
+  const password = watch("password");
+
+  const [showPassword, setShowPassword] = useState<Boolean>(false);
 
   const onSubmit = async (values: IRegisterPayload) => {
     setLoading();
@@ -67,7 +71,7 @@ export const Register: React.FC<RegisterProps> = props => {
     if (res.status === 200 && res.data.success && res.data.token) {
       // console.log('register', res);
       Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
-      history.push('/');
+      history.push('/home');
     } else {
       const err: IError = {
         status: res.status,
@@ -124,32 +128,51 @@ export const Register: React.FC<RegisterProps> = props => {
             <InputLabel>Password</InputLabel>
             <OutlinedInput
               disabled={loading}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               label="Password"
               name="password"
               inputRef={register({
                 required: true,
-                minLength: {
-                  value: 6,
-                  message: 'Password must be atleast 6'
+                pattern: {
+                  value: REGEX.PASSWORD,
+                  message: "Invalid password"
                 }
               })}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => {
+                      setShowPassword(!showPassword)
+                    }}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
               error={!!(errors.password)}
             />
             {errors.password && (
-              <FormHelperText>{errors.password.type === 'required' ? 'Password is required' : errors.password.message}</FormHelperText>
+              <FormHelperText>
+                {/* {errors.password.type === 'required' ? 'Password is required' : errors.password.message} */}
+                <ul style={{marginLeft: '16px'}}>
+                  <li className={REGEX.SIXCHAR.test(password) ? classes.colorPrimary : classes.colorError}>Atleast 6 character</li>
+                  <li className={REGEX.NUMBER.test(password) ? classes.colorPrimary : classes.colorError}>Contain 1 number</li>
+                  <li className={REGEX.UPPERCASE.test(password) ? classes.colorPrimary : classes.colorError}>Contain 1 uppercase</li>
+                  <li className={REGEX.LOWERCASE.test(password) ? classes.colorPrimary : classes.colorError}>Contain 1 lowercase</li>
+                </ul>
+              </FormHelperText>
             )}
           </FormControl>
           <FormControl variant="outlined" error={!!(errors.confirmPassword)} className={classes.fields}>
             <InputLabel>Confirmation Password</InputLabel>
             <OutlinedInput
               disabled={loading}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               label="Confirmation Password"
               name="confirmPassword"
               inputRef={register({
                 required: true,
-                validate: value => value === watch("password") || "Password doesn't match"
+                validate: value => value === password || "Password doesn't match"
               })}
               error={!!(errors.confirmPassword)}
             />
@@ -184,7 +207,7 @@ export const Register: React.FC<RegisterProps> = props => {
         </form>
         <div className={classes.signUpInfo}>
           <Typography>
-            Have account ? <Link to="/login">Login</Link>
+            Have account ? <Link to="/">Login</Link>
           </Typography>
         </div>
       </div>

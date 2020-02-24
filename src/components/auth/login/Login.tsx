@@ -14,7 +14,7 @@ import { ILoginPayload } from "./interface";
 import { LoadingContext } from "context/loading/loadingContext";
 import { ErrorContext } from "context/error/errorContext";
 import { Cookies, ApiCall } from "middleware";
-import { LOCALNAME, REGEX, API_ROUTES } from "utils/Constant";
+import { LOCALNAME, API_ROUTES } from "utils/Constant";
 import { useForm } from "react-hook-form";
 import { AxiosResponse } from "axios";
 import { IAuth } from "../interface";
@@ -28,7 +28,7 @@ export type LoginProps = RouteComponentProps & Props;
 export const Login: React.FC<LoginProps> = props => {
   useEffect(() => {
     if (Cookies.get(LOCALNAME.TOKEN)) {
-      props.history.push("/");
+      props.history.push("/home");
     }
     // eslint-disable-next-line
   }, [props.history]);
@@ -53,26 +53,24 @@ export const Login: React.FC<LoginProps> = props => {
   const onSubmit = async (values: ILoginPayload) => {
     setLoading();
     let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values); 
-    if (res.status === 200 && res.data.success && res.data.token) {
-      Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
-      history.push('/');
-    } else {
-      const err: IError = {
-        status: res.status,
-        statusText: res.statusText,
-        message: res.data.error || 'Error'
+    if (res) {
+      if (res.status === 200 && res.data.success && res.data.token) {
+        Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+        history.push('/home');
+      } else {
+        const err: IError = {
+          status: res.status,
+          statusText: res.statusText,
+          message: res.data.error || 'Error'
+        }
+        setError(err);
       }
-      setError(err);
     }
     resetLoading();
   };
 
-  // useEffect(() => {
-  //   console.log("errors", errors);
-  // });
-
-  return (
-    <AuthContainer>      
+  return ( 
+    <AuthContainer>
       <div className={classes.signInForm}>
         <Typography variant="h2" style={{ marginBottom: "16px" }}>
           Sign in
@@ -85,13 +83,7 @@ export const Login: React.FC<LoginProps> = props => {
               type="text"
               label="Email"
               name="email"
-              inputRef={register({
-                required: true,
-                pattern: {
-                  value: REGEX.EMAIL,
-                  message: "Invalid email address"
-                }
-              })}
+              inputRef={register()}
               error={!!(errors.email)}
             />
             {errors.email && (
@@ -105,13 +97,7 @@ export const Login: React.FC<LoginProps> = props => {
               type="password"
               label="Password"
               name="password"
-              inputRef={register({
-                required: true,
-                minLength: {
-                  value: 6,
-                  message: 'Password must be atleast 6'
-                }
-              })}
+              inputRef={register()}
               error={!!(errors.password)}
             />
             {errors.password && (
