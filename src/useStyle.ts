@@ -3,6 +3,12 @@ import { Theme, makeStyles } from "@material-ui/core";
 const purpleBg = '#464159';
 const green = '#8bbabb';
 const gray = '#6c7b95';
+const white = '#fff';
+
+// const black = '#1b262c';
+// const darkBlue = '#0f4c75';
+// const blue = '#3282b8';
+// const lightBlue = '#bbe1fa';
 
 const drawerWidth = '33.3%';
 const gridXl2 = '16.666667%';
@@ -10,6 +16,36 @@ const gridXl2 = '16.666667%';
 
 export const useStyle = makeStyles((theme: Theme) => ({
   toolbar: theme.mixins.toolbar,
+  '@global': {
+    '*': {
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: 0
+    },
+    'body': {
+      backgroundColor: purpleBg
+    },
+    '::-webkit-scrollbar': {
+      width: '5px'
+    },
+    '::-webkit-scrollbar-track': {
+      background: green
+    },
+    '::-webkit-scrollbar-thumb': {
+      background: gray
+    },
+    '::-webkit-scrollbar-thumb:hover': {
+      background: purpleBg
+    },
+    '.MuiOutlinedInput-input:-webkit-autofill': {
+      '-webkit-box-shadow': 'none',
+      '-moz-box-shadow': 'none',
+      'box-shadow': 'none'
+    },
+    'input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active': {
+      transition: 'background-color 5000s ease-in-out 0s'
+    }
+  },
   mainContainer: {
     height: '100vh',
     padding: '0',
@@ -37,7 +73,8 @@ export const useStyle = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: gray,
-    borderRight: '1px solid #464159'
+    borderRight: `1px solid ${purpleBg}`
+
     // backgroundImage: 'url(/images/sign_up_1.jpg)',
     // backgroundSize: 'cover',
     // backgroundRepeat: 'no-repeat',
@@ -60,9 +97,6 @@ export const useStyle = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
-    // [theme.breakpoints.down('md')]: {
-    //   justifyContent: 'center'
-    // }
   },
   fields: {
     width: '100%',
@@ -127,31 +161,40 @@ export const useStyle = makeStyles((theme: Theme) => ({
       display: 'none',
     },
   },
+  backButton: {
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
   fabIcon: {
-    margin: '12px auto'
+    margin: '12px auto',
+    [theme.breakpoints.only('md')]: {
+      width: '46px',
+      height: '46px'
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '40px',
+      height: '40px'
+    },
   },
   fabSetting: {
     position: 'absolute', 
     transform: 'translateX(-50%)', 
-    bottom: '20px'
+    bottom: '20px',
+    [theme.breakpoints.only('md')]: {
+      width: '46px',
+      height: '46px'
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: '40px',
+      height: '40px'
+    },
   },
-  paperNote: {
+  noteList: {
     height: '100%',
     overflowX: 'auto',
-    marginTop: '4px',
     background: green,
-    '&::-webkit-scrollbar': {
-      width: '5px'
-    },
-    '&::-webkit-scrollbar-track': {
-      background: green
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: gray
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: purpleBg
-    }
   },
   textElipsis: {
     overflow: 'hidden',
@@ -160,5 +203,64 @@ export const useStyle = makeStyles((theme: Theme) => ({
   },
   skeleton: {
     backgroundColor: `${gray} !important`
+  },
+  colorError: {
+    color: theme.palette.error.main
+  },
+  colorPrimary: {
+    color: theme.palette.primary.dark
+  },
+  colorSuccess: {
+    color: theme.palette.success.dark
+  },
+  settingsMenu: {
+    color: white,
+    backgroundColor: purpleBg
+  },
+  settingsMenuItem: {
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main
+    },
+  },
+  options: {
+    width: '95%', 
+    height: '100%',
+    margin: '0px auto', 
+    display: 'flex', 
+    flexDirection: 'row'
+  },
+  optionsFab: {
+    display: 'flex', 
+    flexDirection: 'row',
+     width: '50%', 
+     justifyContent: 'flex-end'
+  },
+  optionsFabItem: {
+    margin: 'auto 8px'
+  },
+  dueDate: {
+    color: theme.palette.error.dark
+  },
+  mainDiv: {
+    height: "100%",
+    width: "95%",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "row"
+  },
+  mainField: {
+    margin: '0',
+    height: '100%',
+    '& .MuiInputBase-root': {
+      height: '100%'
+    }
+  },
+  mainFieldInput: {
+    height: '100% !important',
+    overflow: 'auto !important',
+  },
+  mainGridContainer: {
+    height: '100%',
+    paddingTop: '64px'
   }
 }));
