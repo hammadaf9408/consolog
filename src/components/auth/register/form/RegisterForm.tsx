@@ -55,19 +55,21 @@ export const Registerform = (initialState: IRegisterPayload, validate: any, prop
     };
 
     let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.REGISTER, payload);
-    if (res.status === 200 && res.data.success && res.data.token) {
-      // console.log('register', res);
-      Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
-      history.push('/');
-    } else {
-      const err: IError = {
-        status: res.status,
-        statusText: res.statusText,
-        message: res.data.error || 'Error'
+    if (res) {
+      if (res.status === 200 && res.data.token) {
+        // console.log('register', res);
+        Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+        history.push('/');
+      } else {
+        const err: IError = {
+          status: res.status,
+          statusText: res.statusText,
+          message: res.data.error || 'Error'
+        }
+        setError(err);
       }
-      setError(err);
+      resetLoading();
     }
-    resetLoading();
   }
 
   return {

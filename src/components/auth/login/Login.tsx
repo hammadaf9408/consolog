@@ -14,7 +14,7 @@ import { ILoginPayload } from "./interface";
 import { LoadingContext } from "context/loading/loadingContext";
 import { ErrorContext } from "context/error/errorContext";
 import { Cookies, ApiCall } from "middleware";
-import { LOCALNAME, API_ROUTES } from "utils/Constant";
+import { LOCALNAME, API_ROUTES, CONFIG_AXIOS } from "utils/Constant";
 import { useForm } from "react-hook-form";
 import { AxiosResponse } from "axios";
 import { IAuth } from "../interface";
@@ -52,7 +52,7 @@ export const Login: React.FC<LoginProps> = props => {
   
   const onSubmit = async (values: ILoginPayload) => {
     setLoading();
-    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values); 
+    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values, CONFIG_AXIOS.NOAUTH); 
     if (res) {
       if (res.status === 200 && res.data.success && res.data.token) {
         Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
@@ -65,8 +65,8 @@ export const Login: React.FC<LoginProps> = props => {
         }
         setError(err);
       }
+      resetLoading();
     }
-    resetLoading();
   };
 
   return ( 
