@@ -58,7 +58,7 @@ app.use(helmet());
 // Prevent XSS attacks
 app.use(xss());
 
-var whitelist = ['http://localhost:3006']
+var whitelist = [process.env.WHITELIST.split(' ')]
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -67,6 +67,7 @@ var corsOptions = {
       callback(new Error('Not allowed by CORS'))
     }
   }
+  // origin: '*'
 }
 
 // enable Cors
