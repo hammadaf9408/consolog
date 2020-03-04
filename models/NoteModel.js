@@ -18,20 +18,37 @@ const NoteSchema = new mongoose.Schema({
   },
   label: {
     type: String
+  },  
+  dueDate: {
+    type: {
+      date: Date,
+      value: Boolean
+    }
   },
-  // dueDate: {
-  //   type: String
+  todo: {
+    type: [{
+      name: String,
+      value: Boolean,
+      default: false
+    }]
+  },
+  // commentlist: {
+  //   type: [{
+  //     user: {
+  //       type: mongoose.Schema.ObjectId,
+  //       ref: 'User',
+  //       required: true
+  //     },
+  //     comment: String,
+  //     commentDate: {
+  //       type: Date,
+  //       default: Date.now
+  //     }
+  //   }]
   // },
   // attachFile: {
   //   type: File
   // },
-  // checklist: {
-  //   type: Array
-  // },
-  achieve: {
-    type: Boolean,
-    default: false
-  },
   createdAt: {
     type: Date,
     default: Date.now
