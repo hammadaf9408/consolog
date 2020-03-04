@@ -143,6 +143,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     left: 'auto'
   },
   leftAppBar: {
+    backgroundColor: '#0f4c75',
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
       left: 0,
@@ -150,6 +151,7 @@ export const useStyle = makeStyles((theme: Theme) => ({
     },
   },
   rightAppBar: {
+    backgroundColor: '#0f4c75',
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth})`,
       zIndex: theme.zIndex.drawer + 1,
@@ -213,13 +215,18 @@ export const useStyle = makeStyles((theme: Theme) => ({
   colorSuccess: {
     color: theme.palette.success.dark
   },
-  settingsMenu: {
+  menu: {
     color: white,
     backgroundColor: purpleBg
   },
-  settingsMenuItem: {
+  menuItem: {
     '&:hover': {
       backgroundColor: theme.palette.primary.main
+    },
+  },
+  menuItemError: {
+    '&:hover': {
+      backgroundColor: theme.palette.error.dark
     },
   },
   options: {

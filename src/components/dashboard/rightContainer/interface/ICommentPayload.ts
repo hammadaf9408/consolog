@@ -1,4 +1,4 @@
-export interface IComment {
+export interface ICommentPayload {
   id: string;
   userId: string;
   userName: string;

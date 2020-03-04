@@ -36,7 +36,7 @@ export const CommentPartial: React.FC<CommentPartialProps> = props => {
   return (
     <Paper style={{ height: "100%", overflowX: 'auto'}}>
       <List style={{paddingTop: 0}}>
-        <div style={{backgroundColor: '#6c7b95', zIndex: 1500, position: 'sticky', top: 0}}>
+        <div style={{backgroundColor: '#6c7b95', zIndex: 1000, position: 'sticky', top: 0}}>
           <ListItem ContainerProps={{ style: { paddingLeft: '54px', paddingRight: '32px' } }}>
             <ListItemText primary={
               <TextField 

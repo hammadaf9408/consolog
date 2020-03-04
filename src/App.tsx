@@ -9,6 +9,7 @@ import { Home } from 'components/dashboard/home/Home';
 import { GlobalContainer } from 'components/container/GlobalContainer';
 import './App.css';
 import { ThemeProvider, createMuiTheme, useMediaQuery } from '@material-ui/core';
+import { NotesState } from 'components/dashboard/context/notes/NotesState';
 
 interface IPrivateRoute extends RouteProps {
   component: any;
@@ -56,7 +57,9 @@ export const App: React.FC<any> = props => {
                 <GlobalContainer>
                   <Route exact path="/" component={Login} />
                   <Route exact path="/register" component={Register} />
-                  <PrivateRoute path="/home" component={Home} />
+                  <NotesState>
+                    <PrivateRoute path="/home" component={Home} />
+                  </NotesState>
                 </GlobalContainer>
               </Switch>
             </Router>

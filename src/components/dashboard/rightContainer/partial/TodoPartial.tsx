@@ -1,5 +1,4 @@
 import React from "react";
-import { FieldTypes } from "../types";
 // import { useStyle } from "useStyle";
 import {
   Paper,
@@ -15,21 +14,73 @@ import {
 } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
+import { useFieldArray } from "react-hook-form";
+import { INotesTodo } from "components/dashboard/context/notes/INotesTodo";
+// import { INoteTodoPayload } from "../interface/INoteTodoPayload";
 
 interface Props {
-  value: string;
-  handleOnChange: (type: FieldTypes, value: string) => void;
-  todo: string[];
-  handleAddList: (type: FieldTypes) => void;
-  handleKeyDown: (type: FieldTypes, event: React.KeyboardEvent) => void;
-  handleDeleteList: (type: FieldTypes, index: number) => void;
+  control: any;
+  register: any;
+  loading: boolean;
+  initialValue?: INotesTodo[];
+  currentValue?: any;
 }
 
 type TodoPartialProps = Props;
 
 export const TodoPartial: React.FC<TodoPartialProps> = props => {
   // const classes = useStyle();
-  const { value, todo, handleOnChange, handleAddList, handleKeyDown, handleDeleteList } = props;
+  const { control, register, initialValue, loading } = props;
+
+  const { fields, prepend, remove } = useFieldArray({
+    control,
+    name: 'todo'
+  })
+  const [todo, setTodo] = React.useState<string>('');
+  const [itemCheck, setItemCheck] = React.useState<boolean[]>([]);
+
+  const handleAddTodo = () => {
+    prepend({ name: todo, value: false })
+    setItemCheck([false].concat(itemCheck));
+    setTodo('');
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'Enter':
+        prepend({ name: todo, value: false })
+        setItemCheck([false].concat(itemCheck));
+        setTodo('');
+        break
+      case 'Escape':
+        // etc...
+        break
+      default: break
+    }
+  }
+
+  const handleCheck = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(index, e);
+    itemCheck[index] = e.target.checked;
+    setItemCheck([...itemCheck])
+  }
+
+  React.useEffect(() => {
+    // console.log('render mennn')
+    setTodo('')
+    if (initialValue) {
+      const item: boolean[] = [];
+      initialValue.map(itm => item.push(itm.value))
+      setItemCheck(item)
+    } else {
+      // setItemCheck([])
+    }
+  }, [initialValue])
+
+  React.useEffect(() => {
+    // console.log('fields', fields)
+    // console.log('itemCheck', itemCheck)
+  })
 
   return (
     <Paper style={{ height: "100%", overflowX: 'auto'}}>
@@ -39,42 +90,68 @@ export const TodoPartial: React.FC<TodoPartialProps> = props => {
             <ListItemText primary={
               <TextField 
                 fullWidth 
+                disabled={loading}
                 placeholder="Type here..." 
-                value={value} 
+                value={todo} 
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleOnChange(FieldTypes.Todo, event.target.value)
+                  setTodo(event.target.value)
                 }
-                onKeyDown={(event: React.KeyboardEvent) => handleKeyDown(FieldTypes.Todo, event)} 
+                onKeyDown={(event: React.KeyboardEvent) => handleKeyDown(event)} 
               />
             } />
             <ListItemSecondaryAction>
-              <IconButton onClick={() => handleAddList(FieldTypes.Todo)}>
+              <IconButton onClick={handleAddTodo} >
                 <AddIcon />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
           <Divider />
         </div>
-        {todo.map((value, index) => {
+        
+        {fields.map((item, index) => {
           return (
-            <React.Fragment key={index}>
+            <React.Fragment key={item.id}>
               <ListItem>
                 <ListItemIcon>
                   <Checkbox
-                    edge="start"
+                    // edge="start"
+                    color="primary"
                     tabIndex={-1}
-                    disableRipple
+                    // disableRipple
+                    disabled={loading}
+                    // defaultChecked={item.value}
+                    value={itemCheck[index]}
+                    checked={itemCheck[index]}
+                    onChange={handleCheck(index)}
+                    name={`todo[${index}].value`}
+                    inputRef={register({})}
                   />
                 </ListItemIcon>
-                <ListItemText primary={`Item ${value}`} />
+                <ListItemText 
+                  style={{paddingRight: '32px'}}
+                  primary={
+                    <TextField 
+                      fullWidth 
+                      disabled={loading}
+                      InputProps={{
+                        disableUnderline: itemCheck[index],
+                        readOnly: itemCheck[index]
+                      }}
+                      placeholder="Type here..." 
+                      defaultValue={`${item.name}`}
+                      name={`todo[${index}].name`}
+                      inputRef={register({})}
+                    />
+                  } 
+                />
                 <ListItemSecondaryAction>
-                  <IconButton onClick={() => handleDeleteList(FieldTypes.Todo, index)} >
+                  <IconButton onClick={() => remove(index)} >
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
               {
-                index !== todo.length - 1 &&
+                index !== fields.length - 1 &&
                 <Divider />
               }
             </React.Fragment>

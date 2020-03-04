@@ -1,3 +1,5 @@
+import { Cookies } from "middleware";
+
 const API_ENDPOINT = process.env.REACT_APP_API_URL || '';
 
 const API_ROUTES = {
@@ -13,11 +15,11 @@ const API_ROUTES = {
   UPDATE_USER: API_ENDPOINT + '/api/v1/user/updatedetails',
 
   // Note
-  ALL_NOTE: API_ENDPOINT + '/api/v1/note',
-  SINGLE_NOTE: API_ENDPOINT + '/api/v1/note/',
-  CREATE_NOTE: API_ENDPOINT + '/api/v1/note',
-  UPDATE_NOTE: API_ENDPOINT + '/api/v1/note/',
-  DELETE_NOTE: API_ENDPOINT + '/api/v1/note/',
+  NOTES: API_ENDPOINT + '/api/v1/note',
+  // SINGLE_NOTE: API_ENDPOINT + '/api/v1/note',
+  // CREATE_NOTE: API_ENDPOINT + '/api/v1/note',
+  // UPDATE_NOTE: API_ENDPOINT + '/api/v1/note',
+  // DELETE_NOTE: API_ENDPOINT + '/api/v1/note',
 }
 
 const REGEX = {
@@ -35,9 +37,23 @@ const LOCALNAME = {
   APICONST : 'APICONST'
 }
 
+const CONFIG_AXIOS = {
+  NOAUTH: {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  },
+  WITHAUTH: {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+    }
+  }
+}
 export {
   API_ENDPOINT,
   API_ROUTES,
   REGEX,
-  LOCALNAME
+  LOCALNAME,
+  CONFIG_AXIOS
 }

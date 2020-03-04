@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Typography,
+  // Typography,
   Grid,
   Hidden,
   Drawer,
@@ -12,10 +12,9 @@ import {
 } from "@material-ui/core";
 import { useStyle } from "useStyle";
 import MenuIcon from "@material-ui/icons/Menu";
-import BackIcon from "@material-ui/icons/KeyboardBackspace";
 import { MenuList, NoteList } from "../leftContainer";
 import { RouteComponentProps } from "react-router-dom";
-import { OptionsList, Main } from "../rightContainer";
+import { Main } from "../rightContainer";
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import moment from "moment";
@@ -34,6 +33,10 @@ export const Home: React.FC<HomeProps> = props => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  React.useEffect(() => {
+    // console.log('home render')
+  })
 
   return (
     <React.Fragment>
@@ -54,9 +57,9 @@ export const Home: React.FC<HomeProps> = props => {
                   >
                     <MenuIcon />
                   </IconButton>
-                  <Typography variant="h6" noWrap>
+                  {/* <Typography variant="h6" noWrap>
                     Left bar
-                  </Typography>
+                  </Typography> */}
                 </Toolbar>
               </AppBar>
               <Grid container spacing={0} style={{ height: "100%" }}>
@@ -93,41 +96,10 @@ export const Home: React.FC<HomeProps> = props => {
           </Drawer>
         </Hidden>
         <Grid item xs={12} sm={8} md={8} lg={8} xl={8} style={{height: '100%'}}>
-        <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
           {/* Right container */}
-          <Paper className={classes.rightContainer}>
-            <AppBar position="fixed" className={classes.rightAppBar}>
-              <Toolbar>
-                {/* This icon only show on small width */}
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  edge="start"
-                  onClick={handleDrawerToggle}
-                  className={classes.menuButton}
-                >
-                  <MenuIcon />
-                </IconButton>
-                {/* Back button */}
-                <IconButton edge="start" className={classes.backButton} color="inherit" aria-label="menu">
-                  <BackIcon />
-                </IconButton>
-                <Typography variant="h6" noWrap>
-                  Note Title
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            {/*  */}
-            <Grid container spacing={0} className={classes.mainGridContainer}>
-              <Grid item xs={12} style={{height: '10%'}}>
-                <OptionsList />
-              </Grid>
-              <Grid item xs={12} style={{height: '90%', paddingBottom: '16px'}}>
-                <Main />
-              </Grid>
-            </Grid>
-          </Paper>
-        </MuiPickersUtilsProvider>
+          <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
+            <Main />
+          </MuiPickersUtilsProvider>
         </Grid>
       </Grid>
     </React.Fragment>

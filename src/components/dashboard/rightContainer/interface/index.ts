@@ -1,3 +1,3 @@
-export * from './ITodo';
-export * from './IComment';
-export * from './INote';
+export * from './ITodoPayload';
+export * from './ICommentPayload';
+export * from './INotePayload';

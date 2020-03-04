@@ -1,36 +1,37 @@
 import React from "react";
 import { useStyle } from "useStyle";
-import { Paper, TextField } from "@material-ui/core";
-import { FieldTypes } from "../types";
+import { Paper, FormControl, OutlinedInput } from "@material-ui/core";
+import { INotes } from "components/dashboard/context/notes/INotes";
 
 interface Props {
-  value: string;
-  handleOnChange: (type: FieldTypes, value: string) => void;
+  defaultValue?: INotes;
+  loading: boolean;
+  register: any;
 }
 
 type NotePartialProps = Props;
 
 export const NotePartial: React.FC<NotePartialProps> = props => {
   const classes = useStyle();
-  const { value, handleOnChange } = props;
+  const { register, loading } = props;
 
   return (
     <Paper style={{ height: "100%" }}>
-      <TextField
-        fullWidth
-        multiline
-        margin="normal"
-        value={value}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          handleOnChange(FieldTypes.Note, event.target.value)
-        }
-        placeholder="Type your note here..."
-        variant="outlined"
-        className={classes.mainField}
-        inputProps={{
-          className: classes.mainFieldInput
-        }}
-      />
+      <FormControl variant="outlined" className={classes.mainField} style={{width: '100%'}}>
+        <OutlinedInput
+          // defaultValue={defaultValue?.note}
+          disabled={loading}
+          multiline
+          fullWidth
+          placeholder="Type your note here..."
+          type="text"
+          name="note"
+          inputProps={{
+            className: classes.mainFieldInput
+          }}
+          inputRef={register()}
+        />
+      </FormControl>
     </Paper>
   );
 };

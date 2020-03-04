@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export default {
-  get: async (url: string) => {
+  get: async (url: string, config?: any) => {
     try {
-      let res = await axios.get(url)
+      let res = await axios.get(url, config)
       return res
     } catch (err) {
       console.log('err', err)
@@ -11,9 +11,9 @@ export default {
       return errResponse
     }
   },
-  post: async (url: string, data: any) => {
+  post: async (url: string, data: any, config?: any) => {
     try {
-      let res = await axios.post(url, data)
+      let res = await axios.post(url, data, config)
       return res
     } catch (err) {
       console.log('err', err)
@@ -21,9 +21,9 @@ export default {
       return errResponse
     }
   },
-  put: async (url: string, id: string, data: any) => {
+  put: async (url: string, id: string, data: any, config?: any) => {
     try {
-      let res = await axios.put(url + '/' + id, data)
+      let res = await axios.put(url + '/' + id, data, config)
       return res
     } catch (err) {
       console.log('err', err)
@@ -31,9 +31,9 @@ export default {
       return errResponse
     }
   },
-  delete: async (url: string, id: string) => {
+  delete: async (url: string, id: string,  config?: any) => {
     try {
-      let res = await axios.delete(url + '/' + id)
+      let res = await axios.delete(url + '/' + id, config)
       return res
     } catch (err) {
       console.log('err', err)
