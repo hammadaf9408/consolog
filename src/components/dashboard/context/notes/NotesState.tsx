@@ -3,8 +3,8 @@ import { notesReducer, NotesACtion } from './notesReducer';
 import { INotes } from './INotes';
 import { NotesContext, INotesDataCtx } from './notesContext';
 import { AxiosResponse } from 'axios';
-import { ApiCall } from 'middleware';
-import { API_ROUTES, CONFIG_AXIOS } from 'utils/Constant';
+import { ApiCall, Cookies } from 'middleware';
+import { API_ROUTES, LOCALNAME } from 'utils/Constant';
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ErrorContext } from 'context/error/errorContext';
 import { IError } from 'context/error/IError';
@@ -23,7 +23,13 @@ export const NotesState: React.FC<any> = props => {
   // load all notes
   const loadAllNotes = async () => {
     setLoading();
-    let res: AxiosResponse<any> = await ApiCall.get(API_ROUTES.NOTES, CONFIG_AXIOS.WITHAUTH); 
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+      }
+    }
+    let res: AxiosResponse<any> = await ApiCall.get(API_ROUTES.NOTES, config); 
     if (res) {
       if (res.status === 200) {
         const data = {

@@ -15,8 +15,8 @@ import { NotesContext } from 'components/dashboard/context/notes/notesContext';
 import { AxiosResponse } from 'axios';
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ErrorContext } from 'context/error/errorContext';
-import { ApiCall } from 'middleware';
-import { API_ROUTES, CONFIG_AXIOS } from 'utils/Constant';
+import { ApiCall, Cookies } from 'middleware';
+import { API_ROUTES, LOCALNAME } from 'utils/Constant';
 import { IError } from 'context/error/IError';
 import { INotesDueDate } from 'components/dashboard/context/notes/INotesDueDate';
 
@@ -54,8 +54,14 @@ export const OptionsList: React.FC<OptionsProps> = props => {
   const onDelete = async () => {
     setAnchorEl(null);
     if (singleNote) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+        }
+      }
       setLoading();
-      let res: AxiosResponse<any> = await ApiCall.delete(API_ROUTES.NOTES, singleNote._id, CONFIG_AXIOS.WITHAUTH);
+      let res: AxiosResponse<any> = await ApiCall.delete(API_ROUTES.NOTES, singleNote._id, config);
       if (res) {
         if (res.status === 200) {
           loadSingleNote();

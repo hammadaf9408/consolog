@@ -12,8 +12,8 @@ import { INotePayload } from "../interface";
 import { useForm } from "react-hook-form";
 import { LoadingContext } from "context/loading/loadingContext";
 import { AxiosResponse } from "axios";
-import { ApiCall } from "middleware";
-import { API_ROUTES, CONFIG_AXIOS } from "utils/Constant";
+import { ApiCall, Cookies } from "middleware";
+import { API_ROUTES, LOCALNAME } from "utils/Constant";
 import { IError } from "context/error/IError";
 import { ErrorContext } from "context/error/errorContext";
 import { NotesContext } from "components/dashboard/context/notes/notesContext";
@@ -125,10 +125,16 @@ export const Main: React.FC<MainProps> = props => {
 
     setLoading();
     let res: AxiosResponse<any>;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+      }
+    }
     if (singleNote) {
-      res = await ApiCall.put(API_ROUTES.NOTES, singleNote?._id, payload, CONFIG_AXIOS.WITHAUTH)
+      res = await ApiCall.put(API_ROUTES.NOTES, singleNote?._id, payload, config)
     } else {
-      res = await ApiCall.post(API_ROUTES.NOTES, payload, CONFIG_AXIOS.WITHAUTH);
+      res = await ApiCall.post(API_ROUTES.NOTES, payload, config);
     }
     if (res) {
       if (res.status === 200) {
