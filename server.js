@@ -58,7 +58,8 @@ app.use(helmet());
 // Prevent XSS attacks
 app.use(xss());
 
-var whitelist = [process.env.WHITELIST.split(' ')]
+var whitelist = process.env.WHITELIST.split(' ')
+// console.log(whitelist);
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
