@@ -1,6 +1,5 @@
 import * as React from "react";
-import { Grid, Paper, AppBar, Toolbar, IconButton, FormControl, Input } from "@material-ui/core";
-import { useStyle } from "useStyle";
+import { Grid, Paper, AppBar, Toolbar, IconButton, FormControl, Input, withStyles, WithStyles } from "@material-ui/core";
 import { FieldTypes } from "../types";
 import { NotePartial } from "../partial/NotePartial";
 import { TodoPartial } from "../partial/TodoPartial";
@@ -12,18 +11,21 @@ import { INotePayload } from "../interface";
 import { useForm } from "react-hook-form";
 import { LoadingContext } from "context/loading/loadingContext";
 import { AxiosResponse } from "axios";
-import { ApiCall } from "middleware";
-import { API_ROUTES, CONFIG_AXIOS } from "utils/Constant";
+import { ApiCall, Cookies } from "middleware";
+import { API_ROUTES, LOCALNAME } from "utils/Constant";
 import { IError } from "context/error/IError";
 import { ErrorContext } from "context/error/errorContext";
 import { NotesContext } from "components/dashboard/context/notes/notesContext";
+import { styles } from 'styles';
 
 interface Props {}
 
-type MainProps = Props;
+type MainProps 
+  = WithStyles<typeof styles>
+  & Props;
 
-export const Main: React.FC<MainProps> = props => {
-  const classes = useStyle();
+const MainView: React.FC<MainProps> = props => {
+  const { classes } = props;
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -94,7 +96,7 @@ export const Main: React.FC<MainProps> = props => {
   const notesContext = React.useContext(NotesContext);
   const { singleNote, loadAllNotes, loadSingleNote } = notesContext;
   
-  const { handleSubmit, register, reset, control, watch } = useForm<INotePayload>({
+  const { handleSubmit, register, reset, control } = useForm<INotePayload>({
     // mode: "onChange",
     defaultValues: {
       title: '',
@@ -121,14 +123,20 @@ export const Main: React.FC<MainProps> = props => {
       }
     }
 
-    console.log('payload', payload);
+    // console.log('payload', payload);
 
     setLoading();
     let res: AxiosResponse<any>;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+      }
+    }
     if (singleNote) {
-      res = await ApiCall.put(API_ROUTES.NOTES, singleNote?._id, payload, CONFIG_AXIOS.WITHAUTH)
+      res = await ApiCall.put(API_ROUTES.NOTES, singleNote?._id, payload, config)
     } else {
-      res = await ApiCall.post(API_ROUTES.NOTES, payload, CONFIG_AXIOS.WITHAUTH);
+      res = await ApiCall.post(API_ROUTES.NOTES, payload, config);
     }
     if (res) {
       if (res.status === 200) {
@@ -162,10 +170,10 @@ export const Main: React.FC<MainProps> = props => {
     });
   }, [singleNote, reset])
 
-  const todos = watch('todo');
+  // const todos = watch('todo');
 
   React.useEffect(() => {
-    console.log('todos', todos)
+    // console.log('todos', todos)
   })
   return (
     <Paper className={classes.rightContainer}>
@@ -248,3 +256,5 @@ export const Main: React.FC<MainProps> = props => {
     </Paper>
   );
 };
+
+export const Main = withStyles(styles)(MainView)

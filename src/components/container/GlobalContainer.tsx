@@ -1,9 +1,15 @@
 import React from 'react'
-import { useStyle } from 'useStyle';
-import { Container } from '@material-ui/core';
+import { Container, WithStyles, withStyles } from '@material-ui/core';
+import { styles } from 'styles';
 
-export const GlobalContainer: React.FC<any> = props => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+const GlobalContainerView: React.FC<AllProps> = props => {
+  const { classes } = props;
 
   return (
     <Container className={classes.mainContainer} >
@@ -11,3 +17,5 @@ export const GlobalContainer: React.FC<any> = props => {
     </Container>
   );
 }
+
+export const GlobalContainer = withStyles(styles)(GlobalContainerView)

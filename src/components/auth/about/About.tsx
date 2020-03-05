@@ -1,9 +1,15 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
-import { useStyle } from "useStyle";
+import { Typography, WithStyles, withStyles } from "@material-ui/core";
+import { styles } from 'styles';
 
-export const About: React.FC<any> = props => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+const AboutView: React.FC<AllProps> = props => {
+  const { classes } = props;
 
   return (
     <div className={classes.leftContainer}>
@@ -19,3 +25,5 @@ export const About: React.FC<any> = props => {
     </div>
   );
 };
+
+export const About = withStyles(styles)(AboutView)

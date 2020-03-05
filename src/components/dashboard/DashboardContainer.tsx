@@ -1,9 +1,15 @@
 import React from 'react';
-import { Container, Grid } from '@material-ui/core/';
-import { useStyle } from 'useStyle';
+import { Container, Grid, WithStyles, withStyles } from '@material-ui/core/';
+import { styles } from 'styles';
 
-export const DashboardContainer: React.FC<any> = props => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+const DashboardContainerView: React.FC<AllProps> = props => {
+  const { classes } = props;
 
   return (
     <Container className={classes.mainContainer} >
@@ -15,3 +21,5 @@ export const DashboardContainer: React.FC<any> = props => {
     </Container>
   );
 };
+
+export const DashboardContainer = withStyles(styles)(DashboardContainerView)

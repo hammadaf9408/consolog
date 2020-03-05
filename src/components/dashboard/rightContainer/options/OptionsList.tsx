@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fab, Checkbox, Badge, Menu, MenuItem } from '@material-ui/core';
+import { Fab, Checkbox, Badge, Menu, MenuItem, WithStyles, withStyles } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/InfoOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 // import ClearIcon from '@material-ui/icons/Clear';
@@ -7,7 +7,6 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 // import VisibilityIcon from '@material-ui/icons/VisibilityOutlined';
 // import HistoryIcon from '@material-ui/icons/History';
 import SaveIcon from '@material-ui/icons/SaveOutlined';
-import { useStyle } from 'useStyle';
 import { DateTimePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import moment from 'moment';
@@ -15,21 +14,23 @@ import { NotesContext } from 'components/dashboard/context/notes/notesContext';
 import { AxiosResponse } from 'axios';
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ErrorContext } from 'context/error/errorContext';
-import { ApiCall } from 'middleware';
-import { API_ROUTES, CONFIG_AXIOS } from 'utils/Constant';
+import { ApiCall, Cookies } from 'middleware';
+import { API_ROUTES, LOCALNAME } from 'utils/Constant';
 import { IError } from 'context/error/IError';
 import { INotesDueDate } from 'components/dashboard/context/notes/INotesDueDate';
+import { styles } from 'styles';
 
 interface Props {
   register: any;
   initialValue?: INotesDueDate;
 }
 
-export type OptionsProps = Props;
+export type OptionsProps 
+  = WithStyles<typeof styles>
+  & Props;
 
-export const OptionsList: React.FC<OptionsProps> = props => {
-  const classes = useStyle();
-  const { initialValue, register } = props;
+const OptionsListView: React.FC<OptionsProps> = props => {
+  const { initialValue, register, classes } = props;
   const [selectedDate, handleDateChange] = useState<MaterialUiPickersDate>(null);
   const [checkDue, setCheckDue] = useState<boolean>(false);
 
@@ -54,8 +55,14 @@ export const OptionsList: React.FC<OptionsProps> = props => {
   const onDelete = async () => {
     setAnchorEl(null);
     if (singleNote) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+        }
+      }
       setLoading();
-      let res: AxiosResponse<any> = await ApiCall.delete(API_ROUTES.NOTES, singleNote._id, CONFIG_AXIOS.WITHAUTH);
+      let res: AxiosResponse<any> = await ApiCall.delete(API_ROUTES.NOTES, singleNote._id, config);
       if (res) {
         if (res.status === 200) {
           loadSingleNote();
@@ -171,3 +178,5 @@ export const OptionsList: React.FC<OptionsProps> = props => {
     </div>
   )
 }
+
+export const OptionsList = withStyles(styles)(OptionsListView)

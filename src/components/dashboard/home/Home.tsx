@@ -8,9 +8,10 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Paper
+  Paper,
+  WithStyles,
+  withStyles
 } from "@material-ui/core";
-import { useStyle } from "useStyle";
 import MenuIcon from "@material-ui/icons/Menu";
 import { MenuList, NoteList } from "../leftContainer";
 import { RouteComponentProps } from "react-router-dom";
@@ -18,13 +19,17 @@ import { Main } from "../rightContainer";
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import moment from "moment";
+import { styles } from 'styles';
 
 interface Props {}
 
-export type HomeProps = RouteComponentProps & Props;
+export type HomeProps 
+  = RouteComponentProps 
+  & WithStyles<typeof styles>
+  & Props;
 
-export const Home: React.FC<HomeProps> = props => {
-  const classes = useStyle();
+const HomeView: React.FC<HomeProps> = props => {
+  const { classes } = props;
   const theme = useTheme();
   // console.log('props', props);
 
@@ -105,3 +110,5 @@ export const Home: React.FC<HomeProps> = props => {
     </React.Fragment>
   );
 };
+
+export const Home = withStyles(styles)(HomeView)
