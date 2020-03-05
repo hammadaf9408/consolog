@@ -10,9 +10,8 @@ the one that I deploy is on the branch *api/deployed* and I always explore thing
 
 ## Frontend / Client
 The client itself using React Typescript.
-Unlike the API, it's not deployed at all. I hope to be deploying it soon
-Since it's still under development, you can access the thing that I created on the branch *client/playground*
-I still have many todo list for the client.
+[Cn-log](https://cn-log.herokuapp.com/) has been deployed, but not all the function is work like comment for note (it's still under development).
+~~Unlike the API, it's not deployed at all. I hope to be deploying it soon~~
+~~Since it's still under development, you can access the thing that I created on the branch *client/playground*~~
 
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+I still have many todo list for the client.
