@@ -1,7 +1,7 @@
 import React from "react";
-import { useStyle } from "useStyle";
-import { Paper, FormControl, OutlinedInput } from "@material-ui/core";
+import { Paper, FormControl, OutlinedInput, WithStyles, withStyles } from "@material-ui/core";
 import { INotes } from "components/dashboard/context/notes/INotes";
+import { styles } from 'styles';
 
 interface Props {
   defaultValue?: INotes;
@@ -9,11 +9,12 @@ interface Props {
   register: any;
 }
 
-type NotePartialProps = Props;
+type NotePartialProps 
+  = WithStyles<typeof styles>
+  & Props;
 
-export const NotePartial: React.FC<NotePartialProps> = props => {
-  const classes = useStyle();
-  const { register, loading } = props;
+const NotePartialView: React.FC<NotePartialProps> = props => {
+  const { register, loading, classes } = props;
 
   return (
     <Paper style={{ height: "100%" }}>
@@ -35,3 +36,5 @@ export const NotePartial: React.FC<NotePartialProps> = props => {
     </Paper>
   );
 };
+
+export const NotePartial = withStyles(styles)(NotePartialView)

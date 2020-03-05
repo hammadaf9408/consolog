@@ -5,18 +5,26 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  Typography
+  Typography,
+  WithStyles, 
+  withStyles 
 } from "@material-ui/core";
 import moment from 'moment';
 import LockIcon from "@material-ui/icons/LockOutlined";
 import LockOpenIcon from "@material-ui/icons/LockOpenOutlined";
-import { useStyle } from "useStyle";
 import { LoadingContext } from "context/loading/loadingContext";
 import { SkeletonLoad } from "../skeleton/SkeletonLoad";
 import { NotesContext } from "components/dashboard/context/notes/notesContext";
+import { styles } from 'styles';
 
-export const NoteList: React.FC<any> = props => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+const NoteListView: React.FC<AllProps> = props => {
+  const { classes } = props;
   const loadingContext = React.useContext(LoadingContext);
   const { loading } = loadingContext;
 
@@ -55,3 +63,5 @@ export const NoteList: React.FC<any> = props => {
     </List>
   );
 };
+
+export const NoteList = withStyles(styles)(NoteListView)

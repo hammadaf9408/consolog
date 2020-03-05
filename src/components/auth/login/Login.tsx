@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useStyle } from "useStyle";
+// import { useStyle } from "useStyle";
 import { Link, RouteComponentProps } from "react-router-dom";
 import {
   Typography,
@@ -9,6 +9,8 @@ import {
   InputLabel,
   OutlinedInput,
   FormHelperText,
+  WithStyles,
+  withStyles,
 } from "@material-ui/core";
 import { ILoginPayload } from "./interface";
 import { LoadingContext } from "context/loading/loadingContext";
@@ -20,12 +22,16 @@ import { AxiosResponse } from "axios";
 import { IAuth } from "../interface";
 import { IError } from "context/error/IError";
 import { AuthContainer } from "../AuthContainer";
+import { styles } from 'styles';
 
 interface Props {}
 
-export type LoginProps = RouteComponentProps & Props;
+export type LoginProps 
+  = RouteComponentProps 
+  & WithStyles<typeof styles>
+  & Props;
 
-export const Login: React.FC<LoginProps> = props => {
+const LoginView: React.FC<LoginProps> = props => {
   useEffect(() => {
     if (Cookies.get(LOCALNAME.TOKEN)) {
       props.history.push("/home");
@@ -33,8 +39,8 @@ export const Login: React.FC<LoginProps> = props => {
     // eslint-disable-next-line
   }, [props.history]);
 
-  const { history } = props;
-  const classes = useStyle();
+  const { history, classes } = props;
+  // const classes = useStyle();
   const loadingContext = useContext(LoadingContext);
   const errorContext = useContext(ErrorContext);
 
@@ -138,3 +144,5 @@ export const Login: React.FC<LoginProps> = props => {
     </AuthContainer>
   );
 };
+
+export const Login = withStyles(styles)(LoginView)

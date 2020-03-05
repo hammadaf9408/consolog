@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { useStyle } from 'useStyle';
-import { Fab, MenuItem, Menu } from '@material-ui/core';
+import { Fab, MenuItem, Menu, WithStyles, withStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ChatIcon from '@material-ui/icons/ChatOutlined';
@@ -10,14 +9,18 @@ import { Cookies } from 'middleware';
 import { LOCALNAME } from 'utils/Constant';
 import { RouteComponentProps } from 'react-router-dom';
 import { NotesContext } from 'components/dashboard/context/notes/notesContext';
+import { styles } from 'styles';
 
 interface Props {
 }
 
-export type MenuListProps = RouteComponentProps & Props;
+export type MenuListProps 
+  = RouteComponentProps 
+  & WithStyles<typeof styles>
+  & Props;
 
-export const MenuList: React.FC<MenuListProps> = props => {
-  const classes = useStyle();
+const MenuListView: React.FC<MenuListProps> = props => {
+  const { classes } = props;
   const loadingContext = React.useContext(LoadingContext);
   const { loading } = loadingContext;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -80,3 +83,5 @@ export const MenuList: React.FC<MenuListProps> = props => {
     </div>
   )
 }
+
+export const MenuList = withStyles(styles)(MenuListView)

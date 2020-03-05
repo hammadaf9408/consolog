@@ -1,10 +1,17 @@
 import React from 'react';
-import { Grid } from '@material-ui/core/';
+import { Grid, WithStyles, withStyles } from '@material-ui/core/';
 import { About } from './about/About';
-import { useStyle } from 'useStyle';
+import { styles } from 'styles';
 
-export const AuthContainer: React.FC<any> = props => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+
+const AuthContainerView: React.FC<AllProps> = props => {
+  const { classes } = props;
 
   return (
     <Grid container spacing={0} style={{height: '100%'}}>
@@ -21,3 +28,5 @@ export const AuthContainer: React.FC<any> = props => {
     </Grid>
   );
 };
+
+export const AuthContainer = withStyles(styles)(AuthContainerView)

@@ -1,10 +1,16 @@
 import React from 'react'
-import { ListItem, ListItemText, Divider } from '@material-ui/core';
+import { ListItem, ListItemText, Divider, WithStyles, withStyles } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { useStyle } from "useStyle";
+import { styles } from 'styles';
 
-export const SkeletonLoad = () => {
-  const classes = useStyle();
+interface Props {}
+
+type AllProps 
+  = WithStyles<typeof styles>
+  & Props;
+
+const SkeletonLoadView: React.FC<AllProps> = props => {
+  const { classes } = props;
   const render = [];
 
   for (let i = 0; i < 9; i++) {
@@ -27,3 +33,5 @@ export const SkeletonLoad = () => {
     </React.Fragment>
   );
 }
+
+export const SkeletonLoad = withStyles(styles)(SkeletonLoadView)

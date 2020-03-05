@@ -1,4 +1,4 @@
-import { Theme, makeStyles } from "@material-ui/core";
+import { Theme, createStyles } from "@material-ui/core";
 
 const purpleBg = '#464159';
 const green = '#8bbabb';
@@ -14,7 +14,7 @@ const drawerWidth = '33.3%';
 const gridXl2 = '16.666667%';
 // const gridXl10 = '83.333333%';
 
-export const useStyle = makeStyles((theme: Theme) => ({
+export const styles = (theme: Theme) => createStyles({
   toolbar: theme.mixins.toolbar,
   '@global': {
     '*': {
@@ -270,4 +270,4 @@ export const useStyle = makeStyles((theme: Theme) => ({
     height: '100%',
     paddingTop: '64px'
   }
-}));
+});

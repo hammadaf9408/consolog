@@ -9,9 +9,10 @@ import {
   FormHelperText,
   InputAdornment,
   IconButton,
+  WithStyles, 
+  withStyles
 } from "@material-ui/core";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { useStyle } from "useStyle";
 import { LoadingContext } from "context/loading/loadingContext";
 import { IRegisterPayload } from "./interface";
 import { ErrorContext } from "context/error/errorContext";
@@ -24,12 +25,16 @@ import { IError } from "context/error/IError";
 import { AuthContainer } from "../AuthContainer";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { styles } from 'styles';
 
 interface Props {}
 
-export type RegisterProps = RouteComponentProps & Props;
+export type RegisterProps 
+  = RouteComponentProps 
+  & WithStyles<typeof styles>
+  & Props;
 
-export const Register: React.FC<RegisterProps> = props => {
+const RegisterView: React.FC<RegisterProps> = props => {
   useEffect(() => {
     if (Cookies.get(LOCALNAME.TOKEN)) {
       props.history.push("/home");
@@ -37,8 +42,7 @@ export const Register: React.FC<RegisterProps> = props => {
     // eslint-disable-next-line
   }, [props.history]);
 
-  const { history } = props;
-  const classes = useStyle();
+  const { history, classes } = props;
   const loadingContext = useContext(LoadingContext);
   const errorContext = useContext(ErrorContext);
 
@@ -216,3 +220,5 @@ export const Register: React.FC<RegisterProps> = props => {
     </AuthContainer>
   );
 };
+
+export const Register = withStyles(styles)(RegisterView)
