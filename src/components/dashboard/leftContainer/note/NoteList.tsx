@@ -24,21 +24,33 @@ type AllProps
   & Props;
 
 const NoteListView: React.FC<AllProps> = props => {
+
+  /* ============================================ PROPS =============================================== */
+  
   const { classes } = props;
+  
+  /* ============================================ USESTATE ============================================ */
+  
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
   const loadingContext = React.useContext(LoadingContext);
+  const notesContext = React.useContext(NotesContext);
+
+  const { loadAllNotes, allNotes, loadSingleNote } = notesContext;
   const { loading } = loadingContext;
 
-  React.useEffect(() => {
-    // console.log('note render')
-  })
-
-  const notesContext = React.useContext(NotesContext);
-  const { loadAllNotes, allNotes, loadSingleNote } = notesContext;
+  /* ============================================ USEEFFECT =========================================== */
 
   React.useEffect(() => {
     loadAllNotes();
     // eslint-disable-next-line
   }, [])
+
+  /* ============================================ OTHERS ============================================== */
+  
+  
+  /* ============================================ VIEW ================================================ */
   
   return (
     <List>

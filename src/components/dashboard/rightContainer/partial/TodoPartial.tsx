@@ -1,5 +1,4 @@
 import React from "react";
-// import { useStyle } from "useStyle";
 import {
   Paper,
   List,
@@ -16,7 +15,6 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { useFieldArray } from "react-hook-form";
 import { INotesTodo } from "components/dashboard/context/notes/INotesTodo";
-// import { INoteTodoPayload } from "../interface/INoteTodoPayload";
 
 interface Props {
   control: any;
@@ -29,16 +27,36 @@ interface Props {
 type TodoPartialProps = Props;
 
 export const TodoPartial: React.FC<TodoPartialProps> = props => {
-  // const classes = useStyle();
-  const { control, register, initialValue, loading } = props;
 
+  /* ============================================ PROPS =============================================== */
+  
+  const { control, register, initialValue, loading } = props;
   const { fields, prepend, remove } = useFieldArray({
     control,
     name: 'todo'
   })
+
+  /* ============================================ USESTATE ============================================ */
+  
   const [todo, setTodo] = React.useState<string>('');
   const [itemCheck, setItemCheck] = React.useState<boolean[]>([]);
 
+  /* ============================================ USECONTEXT ========================================== */
+  
+  
+  /* ============================================ USEEFFECT =========================================== */
+  
+  React.useEffect(() => {
+    setTodo('')
+    if (initialValue) {
+      const item: boolean[] = [];
+      initialValue.map(itm => item.push(itm.value))
+      setItemCheck(item)
+    }
+  }, [initialValue])
+
+  /* ============================================ OTHERS ============================================== */
+  
   const handleAddTodo = () => {
     prepend({ name: todo, value: false })
     setItemCheck([false].concat(itemCheck));
@@ -60,27 +78,11 @@ export const TodoPartial: React.FC<TodoPartialProps> = props => {
   }
 
   const handleCheck = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log(index, e);
     itemCheck[index] = e.target.checked;
     setItemCheck([...itemCheck])
   }
 
-  React.useEffect(() => {
-    // console.log('render mennn')
-    setTodo('')
-    if (initialValue) {
-      const item: boolean[] = [];
-      initialValue.map(itm => item.push(itm.value))
-      setItemCheck(item)
-    } else {
-      // setItemCheck([])
-    }
-  }, [initialValue])
-
-  React.useEffect(() => {
-    // console.log('fields', fields)
-    // console.log('itemCheck', itemCheck)
-  })
+  /* ============================================ VIEW ================================================ */
 
   return (
     <Paper style={{ height: "100%", overflowX: 'auto'}}>
@@ -100,7 +102,7 @@ export const TodoPartial: React.FC<TodoPartialProps> = props => {
               />
             } />
             <ListItemSecondaryAction>
-              <IconButton onClick={handleAddTodo} >
+              <IconButton onClick={handleAddTodo} disabled={loading} >
                 <AddIcon />
               </IconButton>
             </ListItemSecondaryAction>
@@ -145,7 +147,7 @@ export const TodoPartial: React.FC<TodoPartialProps> = props => {
                   } 
                 />
                 <ListItemSecondaryAction>
-                  <IconButton onClick={() => remove(index)} >
+                  <IconButton onClick={() => remove(index)} disabled={loading} >
                     <DeleteIcon />
                   </IconButton>
                 </ListItemSecondaryAction>

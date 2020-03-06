@@ -17,7 +17,7 @@ const AboutView: React.FC<AllProps> = props => {
         <Typography variant="h1">CLog</Typography>
         <div className={classes.subTitle}>
           <Typography variant="body1">
-            Here are where your notes are comes. Type every single of your
+            Here is where your notes comes. Type every single of your
             moment or script so that you get reminder
           </Typography>
         </div>

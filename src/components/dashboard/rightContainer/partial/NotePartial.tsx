@@ -14,13 +14,13 @@ type NotePartialProps
   & Props;
 
 const NotePartialView: React.FC<NotePartialProps> = props => {
-  const { register, loading, classes } = props;
+  const { register, loading, classes, defaultValue } = props;
 
   return (
     <Paper style={{ height: "100%" }}>
       <FormControl variant="outlined" className={classes.mainField} style={{width: '100%'}}>
         <OutlinedInput
-          // defaultValue={defaultValue?.note}
+          defaultValue={defaultValue?.note}
           disabled={loading}
           multiline
           fullWidth

@@ -20,11 +20,28 @@ export type MenuListProps
   & Props;
 
 const MenuListView: React.FC<MenuListProps> = props => {
-  const { classes } = props;
-  const loadingContext = React.useContext(LoadingContext);
-  const { loading } = loadingContext;
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+  /* ============================================ PROPS =============================================== */
+  
+  const { classes } = props;
+
+  /* ============================================ USESTATE ============================================ */
+  
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
+  const loadingContext = React.useContext(LoadingContext);
+  const notesContext = React.useContext(NotesContext);
+  
+  const { loadSingleNote, loadAllNotes } = notesContext;
+  const { loading } = loadingContext;
+
+  /* ============================================ USEEFFECT =========================================== */
+  
+  
+  /* ============================================ OTHERS ============================================== */
+  
   const handleSettings = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -38,8 +55,7 @@ const MenuListView: React.FC<MenuListProps> = props => {
     props.history.push("/");
   };
   
-  const notesContext = React.useContext(NotesContext);
-  const { loadSingleNote, loadAllNotes } = notesContext;
+  /* ============================================ VIEW ================================================ */
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column'}}>
@@ -49,9 +65,13 @@ const MenuListView: React.FC<MenuListProps> = props => {
       <Fab color="primary" aria-label="add" className={classes.fabIcon} disabled={loading} onClick={loadAllNotes}>
         <RefreshIcon />
       </Fab>
-      <Fab color="primary" aria-label="add" className={classes.fabIcon} disabled={loading} >
-        <ChatIcon />
-      </Fab>
+      {
+        // HAPUS NANTI
+        false &&
+        <Fab color="primary" aria-label="add" className={classes.fabIcon} disabled={loading} >
+          <ChatIcon />
+        </Fab>
+      }
       <div style={{margin: '0 auto'}}>
         <Fab color="primary" aria-label="add" className={classes.fabSetting} disabled={loading} onClick={handleSettings} >
           <SettingsIcon />

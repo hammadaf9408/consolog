@@ -2,56 +2,31 @@ import * as React from 'react';
 import { notesReducer, NotesACtion } from './notesReducer';
 import { INotes } from './INotes';
 import { NotesContext, INotesDataCtx } from './notesContext';
-import { AxiosResponse } from 'axios';
-import { ApiCall, Cookies } from 'middleware';
-import { API_ROUTES, LOCALNAME } from 'utils/Constant';
-import { LoadingContext } from 'context/loading/loadingContext';
-import { ErrorContext } from 'context/error/errorContext';
-import { IError } from 'context/error/IError';
+import { API_ROUTES } from 'utils/Constant';
+import { useApi } from 'components/hooks/useApi';
 
 export const NotesState: React.FC<any> = props => {
+  const { getOnApi } = useApi();
+
   const initialState: INotesDataCtx = { allNotes: undefined, singleNote: undefined };
 
   const [state, dispatch] = React.useReducer(notesReducer, initialState);
 
-  const loadingContext = React.useContext(LoadingContext);
-  const errorContext = React.useContext(ErrorContext);
-
-  const { setLoading, resetLoading } = loadingContext;
-  const { setError } = errorContext;
-
   // load all notes
-  const loadAllNotes = async () => {
-    setLoading();
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
-      }
-    }
-    let res: AxiosResponse<any> = await ApiCall.get(API_ROUTES.NOTES, config); 
-    if (res) {
-      if (res.status === 200) {
-        const data = {
-          data: res.data.data,
-          count: res.data.count
-        };
+  const loadAllNotes = () => {
+    const next = (res: any) => {
+      const data = {
+        data: res.data.data,
+        count: res.data.count
+      };
 
-        dispatch({
-          data,
-          type: NotesACtion.LOAD_ALL_DATA,
-        });
-      } else {
-        alert('Error on load notes');
-        const err: IError = {
-          status: res.status,
-          statusText: res.statusText,
-          message: res.data.error || 'Error'
-        }
-        setError(err);
-      }
-      resetLoading();
+      dispatch({
+        data,
+        type: NotesACtion.LOAD_ALL_DATA,
+      });
     }
+
+    getOnApi(API_ROUTES.NOTES, next);
   }
 
   // load single note

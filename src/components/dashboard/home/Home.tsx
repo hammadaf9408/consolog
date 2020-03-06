@@ -29,19 +29,32 @@ export type HomeProps
   & Props;
 
 const HomeView: React.FC<HomeProps> = props => {
+  
+  /* ============================================ PROPS =============================================== */
+  
   const { classes } = props;
   const theme = useTheme();
-  // console.log('props', props);
 
+  /* ============================================ USESTATE ============================================ */
+  
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
+  
+  /* ============================================ USEEFFECT =========================================== */
+  
+  React.useEffect(() => {
+    // console.log('home render')
+  })
+  
+  /* ============================================ OTHERS ============================================== */
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  React.useEffect(() => {
-    // console.log('home render')
-  })
+  /* ============================================ VIEW ================================================ */
 
   return (
     <React.Fragment>
