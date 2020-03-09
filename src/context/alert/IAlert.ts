@@ -1,4 +1,6 @@
+import { AlertType } from "./AlertType";
+
 export interface IAlert {
-  type: string;
+  type: AlertType | undefined;
   message: string;
 }

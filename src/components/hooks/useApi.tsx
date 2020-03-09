@@ -1,11 +1,12 @@
-import { useContext } from 'react'
+import * as React from 'react'
 import { LoadingContext } from 'context/loading/loadingContext';
 import { ErrorContext } from 'context/error/errorContext';
 import { AxiosResponse } from "axios";
 import { ApiCall, Cookies } from "middleware";
 import { LOCALNAME } from "utils/Constant";
 import { IError } from "context/error/IError";
-
+import { AlertContext } from 'context/alert/alertContext';
+import { AlertType } from 'context/alert/AlertType';
 
 export const useApi = () => {
   const config = {
@@ -22,11 +23,13 @@ export const useApi = () => {
     }
   }
 
-  const loadingContext = useContext(LoadingContext);
-  const errorContext = useContext(ErrorContext);
+  const loadingContext = React.useContext(LoadingContext);
+  const errorContext = React.useContext(ErrorContext);
+  const alertContext = React.useContext(AlertContext);
 
   const { setLoading, resetLoading } = loadingContext;
   const { setError } = errorContext;
+  const { setAlert } = alertContext;
 
   const handleError = (res: any) => {
     const err: IError = {
@@ -34,6 +37,7 @@ export const useApi = () => {
       statusText: res.statusText,
       message: res.data.error || 'Error'
     }
+    setAlert({type: AlertType.Error, message: err.message});
     setError(err);
   }
 
@@ -56,6 +60,7 @@ export const useApi = () => {
     if (res) {
       if (res.status === 200) {
         next(res);
+        setAlert({type: AlertType.Success, message: 'Success adding a note!'});
       } else {
         handleError(res);
       }
@@ -69,6 +74,7 @@ export const useApi = () => {
     if (res) {
       if (res.status === 200) {
         next(res);
+        setAlert({type: AlertType.Info, message: 'This note has been modified!'});
       } else {
         handleError(res);
       }
@@ -82,6 +88,7 @@ export const useApi = () => {
     if (res) {
       if (res.status === 200) {
         next(res);
+        setAlert({type: AlertType.Warning, message: 'Note has been deleted!'});
       } else {
         handleError(res);
       }

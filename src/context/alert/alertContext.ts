@@ -1,6 +1,9 @@
 import { createContext } from 'react';
 import { IAlert } from './IAlert';
 
-const alertContext = createContext<IAlert | null>(null);
+export interface IAlertContext {
+  setAlert: (alert?: IAlert) => void;
+  alert: IAlert;
+}
 
-export default alertContext;
+export const AlertContext = createContext({} as IAlertContext)
