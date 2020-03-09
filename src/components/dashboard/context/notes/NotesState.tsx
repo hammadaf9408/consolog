@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { notesReducer, NotesACtion } from './notesReducer';
+import { notesReducer, NotesAction } from './notesReducer';
 import { INotes } from './INotes';
 import { NotesContext, INotesDataCtx } from './notesContext';
 import { API_ROUTES } from 'utils/Constant';
@@ -22,7 +22,7 @@ export const NotesState: React.FC<any> = props => {
 
       dispatch({
         data,
-        type: NotesACtion.LOAD_ALL_DATA,
+        type: NotesAction.LOAD_ALL_DATA,
       });
     }
 
@@ -33,7 +33,7 @@ export const NotesState: React.FC<any> = props => {
   const loadSingleNote = (data?: INotes) => {
     dispatch({
       data,
-      type: NotesACtion.LOAD_SINGLE_DATA,
+      type: NotesAction.LOAD_SINGLE_DATA,
     });
   }
 
