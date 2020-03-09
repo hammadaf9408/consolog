@@ -16,16 +16,14 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { LoadingContext } from "context/loading/loadingContext";
 import { IRegisterPayload } from "./interface";
 import { ErrorContext } from "context/error/errorContext";
-import { Cookies, ApiCall } from "middleware";
+import { Cookies } from "middleware";
 import { LOCALNAME, API_ROUTES, REGEX } from "utils/Constant";
 import { useForm } from "react-hook-form";
-import { AxiosResponse } from "axios";
-import { IAuth } from "../interface";
-import { IError } from "context/error/IError";
 import { AuthContainer } from "../AuthContainer";
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { styles } from 'styles';
+import { useApi } from "components/hooks/useApi";
 
 interface Props {}
 
@@ -35,20 +33,11 @@ export type RegisterProps
   & Props;
 
 const RegisterView: React.FC<RegisterProps> = props => {
-  useEffect(() => {
-    if (Cookies.get(LOCALNAME.TOKEN)) {
-      props.history.push("/home");
-    }
-    // eslint-disable-next-line
-  }, [props.history]);
-
+  
+  /* ============================================ PROPS =============================================== */
+  
   const { history, classes } = props;
-  const loadingContext = useContext(LoadingContext);
-  const errorContext = useContext(ErrorContext);
-
-  const { loading, setLoading, resetLoading } = loadingContext;
-  const { error, setError } = errorContext;
-
+  const { postOnApi } = useApi();
   const { handleSubmit, register, errors, watch } = useForm<IRegisterPayload>({
     mode: "onChange",
     defaultValues: {
@@ -61,33 +50,46 @@ const RegisterView: React.FC<RegisterProps> = props => {
 
   const password = watch("password");
 
+  /* ============================================ USESTATE ============================================ */
+  
   const [showPassword, setShowPassword] = useState<Boolean>(false);
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
+  const loadingContext = useContext(LoadingContext);
+  const errorContext = useContext(ErrorContext);
 
-  const onSubmit = async (values: IRegisterPayload) => {
-    setLoading();
+  const { loading } = loadingContext;
+  const { error } = errorContext;
+  
+  /* ============================================ USEEFFECT =========================================== */
+  
+  useEffect(() => {
+    if (Cookies.get(LOCALNAME.TOKEN)) {
+      props.history.push("/home");
+    }
+    // eslint-disable-next-line
+  }, [props.history]);
+
+  
+  /* ============================================ OTHERS ============================================== */
+
+  const onSubmit = (values: IRegisterPayload) => {
     const payload = {
       name: values.name,
       email: values.email,
       password: values.password
     };
 
-    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.REGISTER, payload);
-    if (res) {
-      if (res.status === 200 && res.data.token) {
-        // console.log('register', res);
-        Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
-        history.push('/home');
-      } else {
-        const err: IError = {
-          status: res.status,
-          statusText: res.statusText,
-          message: res.data.error || 'Error'
-        }
-        setError(err);
-      }
-      resetLoading();
+    const next = (res: any) => {
+      Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+      history.push('/home');
     }
-  };
+
+    postOnApi(API_ROUTES.REGISTER, payload, false, next);
+  };  
+  
+  /* ============================================ VIEW ================================================ */
 
   return (
     <AuthContainer>

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-// import { useStyle } from "useStyle";
 import { Link, RouteComponentProps } from "react-router-dom";
 import {
   Typography,
@@ -15,14 +14,12 @@ import {
 import { ILoginPayload } from "./interface";
 import { LoadingContext } from "context/loading/loadingContext";
 import { ErrorContext } from "context/error/errorContext";
-import { Cookies, ApiCall } from "middleware";
-import { LOCALNAME, API_ROUTES, CONFIG_AXIOS } from "utils/Constant";
+import { Cookies } from "middleware";
+import { LOCALNAME, API_ROUTES } from "utils/Constant";
 import { useForm } from "react-hook-form";
-import { AxiosResponse } from "axios";
-import { IAuth } from "../interface";
-import { IError } from "context/error/IError";
 import { AuthContainer } from "../AuthContainer";
 import { styles } from 'styles';
+import { useApi } from "components/hooks/useApi";
 
 interface Props {}
 
@@ -32,22 +29,11 @@ export type LoginProps
   & Props;
 
 const LoginView: React.FC<LoginProps> = props => {
-  useEffect(() => {
-    if (Cookies.get(LOCALNAME.TOKEN)) {
-      props.history.push("/home");
-    }
-    // eslint-disable-next-line
-  }, [props.history]);
+
+  /* ============================================ PROPS =============================================== */
 
   const { history, classes } = props;
-  // const classes = useStyle();
-  const loadingContext = useContext(LoadingContext);
-  const errorContext = useContext(ErrorContext);
-
-  const { loading, setLoading, resetLoading } = loadingContext;
-  const { error, setError } = errorContext;
-
-  
+  const { postOnApi } = useApi();
   const { handleSubmit, register, errors } = useForm<ILoginPayload>({
     mode: "onChange",
     defaultValues: {
@@ -56,24 +42,38 @@ const LoginView: React.FC<LoginProps> = props => {
     }
   });
   
-  const onSubmit = async (values: ILoginPayload) => {
-    setLoading();
-    let res: AxiosResponse<IAuth> = await ApiCall.post(API_ROUTES.LOGIN, values, CONFIG_AXIOS.NOAUTH); 
-    if (res) {
-      if (res.status === 200 && res.data.success && res.data.token) {
-        Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
-        history.push('/home');
-      } else {
-        const err: IError = {
-          status: res.status,
-          statusText: res.statusText,
-          message: res.data.error || 'Error'
-        }
-        setError(err);
-      }
-      resetLoading();
+  /* ============================================ USESTATE ============================================ */
+  
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
+  const loadingContext = useContext(LoadingContext);
+  const errorContext = useContext(ErrorContext);
+
+  const { loading } = loadingContext;
+  const { error } = errorContext;
+
+  /* ============================================ USEEFFECT =========================================== */
+
+  useEffect(() => {
+    if (Cookies.get(LOCALNAME.TOKEN)) {
+      props.history.push("/home");
     }
+    // eslint-disable-next-line
+  }, [props.history]);
+
+  /* ============================================ OTHERS ============================================== */
+
+  const onSubmit = (values: ILoginPayload) => {
+    const next = (res: any) => {
+      Cookies.set(LOCALNAME.TOKEN, res.data.token, 7);
+      history.push('/home');
+    }
+
+    postOnApi(API_ROUTES.LOGIN, values, false, next);
   };
+  
+  /* ============================================ VIEW ================================================ */
 
   return ( 
     <AuthContainer>

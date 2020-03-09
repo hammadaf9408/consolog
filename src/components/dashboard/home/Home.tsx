@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  // Typography,
   Grid,
   Hidden,
   Drawer,
@@ -10,7 +9,9 @@ import {
   IconButton,
   Paper,
   WithStyles,
-  withStyles
+  withStyles,
+  Snackbar,
+  Fade
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { MenuList, NoteList } from "../leftContainer";
@@ -20,6 +21,8 @@ import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import moment from "moment";
 import { styles } from 'styles';
+import { AlertContext } from "context/alert/alertContext";
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 interface Props {}
 
@@ -29,19 +32,48 @@ export type HomeProps
   & Props;
 
 const HomeView: React.FC<HomeProps> = props => {
+  
+  /* ============================================ PROPS =============================================== */
+  
   const { classes } = props;
   const theme = useTheme();
-  // console.log('props', props);
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  /* ============================================ USESTATE ============================================ */
+  
+  const [mobileOpen, setMobileOpen] = React.useState<boolean>(false);
+  const [openNotif, setOpenNotif] = React.useState<boolean>(false);
+  
+  /* ============================================ USECONTEXT ========================================== */
+  
+  const alertContext = React.useContext(AlertContext);
+  const { alert, setAlert } = alertContext;
+  
+  /* ============================================ USEEFFECT =========================================== */
+  
+  React.useEffect(() => {
+    console.log('render alert')
+    if (alert.type) {
+      setOpenNotif(true);
+    } else {
+      setOpenNotif(false);
+    }
+  }, [alert])
+  
+  /* ============================================ OTHERS ============================================== */
+  
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  React.useEffect(() => {
-    // console.log('home render')
-  })
+  const Alert = (props: AlertProps) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
+  const handleCloseNotif = () => {
+    setOpenNotif(false);
+    setAlert();
+  }
+  /* ============================================ VIEW ================================================ */
 
   return (
     <React.Fragment>
@@ -100,12 +132,23 @@ const HomeView: React.FC<HomeProps> = props => {
             <NoteList />
           </Drawer>
         </Hidden>
-        <Grid item xs={12} sm={8} md={8} lg={8} xl={8} style={{height: '100%'}}>
+        <Grid item xs={12} sm={8} md={8} lg={8} xl={8} style={{height: '100%', position: 'relative'}}>
           {/* Right container */}
           <MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
             <Main />
           </MuiPickersUtilsProvider>
-        </Grid>
+          <Snackbar 
+            open={openNotif} 
+            key={`top, center`} 
+            anchorOrigin={{vertical: 'top', horizontal: 'center'}} 
+            style={{position: 'absolute', top: '72px'}}
+            autoHideDuration={3000}
+            onClose={handleCloseNotif}
+            TransitionComponent={Fade}
+          >
+            <Alert severity={alert.type}>{alert.message}</Alert>
+          </Snackbar>
+        </Grid>        
       </Grid>
     </React.Fragment>
   );

@@ -10,13 +10,10 @@ import { OptionsList } from "../options/OptionsList";
 import { INotePayload } from "../interface";
 import { useForm } from "react-hook-form";
 import { LoadingContext } from "context/loading/loadingContext";
-import { AxiosResponse } from "axios";
-import { ApiCall, Cookies } from "middleware";
-import { API_ROUTES, LOCALNAME } from "utils/Constant";
-import { IError } from "context/error/IError";
-import { ErrorContext } from "context/error/errorContext";
+import { API_ROUTES } from "utils/Constant";
 import { NotesContext } from "components/dashboard/context/notes/notesContext";
 import { styles } from 'styles';
+import { useApi } from "components/hooks/useApi";
 
 interface Props {}
 
@@ -25,17 +22,54 @@ type MainProps
   & Props;
 
 const MainView: React.FC<MainProps> = props => {
+
+  /* ============================================ PROPS =============================================== */
+  
   const { classes } = props;
+  const { postOnApi, modifyOnApi } = useApi();
+  const { handleSubmit, register, reset, control } = useForm<INotePayload>({
+    // mode: "onChange",
+    defaultValues: {
+      title: '',
+      note: '',
+      dueDate: {
+        date: null,
+        value: false
+      },
+      todo: [],
+    }
+  });
+
+  /* ============================================ USESTATE ============================================ */
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [commentField, setCommentField] = React.useState<string>('');
+  const [commentList, setCommentList] = React.useState<string[]>(['Mantap', 'OK']);
 
+  /* ============================================ USECONTEXT ========================================== */
+  
+  const loadingContext = React.useContext(LoadingContext);
+  const notesContext = React.useContext(NotesContext);
+
+  const { loading } = loadingContext;
+  const { singleNote, loadAllNotes, loadSingleNote } = notesContext;
+
+  /* ============================================ USEEFFECT =========================================== */
+
+  React.useEffect(() => {
+    reset({
+      title: singleNote?.title,
+      note: singleNote?.note,
+      dueDate: singleNote?.dueDate,
+      todo: singleNote?.todo
+    });
+  }, [singleNote, reset])
+  
+  /* ============================================ OTHERS ============================================== */
+    
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const [commentField, setCommentField] = React.useState<string>('');
-
-  const [commentList, setCommentList] = React.useState<string[]>(['Mantap', 'OK']);
 
   const handleOnChange = (type: FieldTypes, value: string) => {
     switch (type) {
@@ -86,31 +120,9 @@ const MainView: React.FC<MainProps> = props => {
         break;
     }
   }
-
-  const loadingContext = React.useContext(LoadingContext);
-  const errorContext = React.useContext(ErrorContext);
-
-  const { loading, setLoading, resetLoading } = loadingContext;
-  const { setError } = errorContext;
-
-  const notesContext = React.useContext(NotesContext);
-  const { singleNote, loadAllNotes, loadSingleNote } = notesContext;
   
-  const { handleSubmit, register, reset, control } = useForm<INotePayload>({
-    // mode: "onChange",
-    defaultValues: {
-      title: '',
-      note: '',
-      dueDate: {
-        date: null,
-        value: false
-      },
-      todo: [],
-    }
-  });
-  
-  const onSubmit = async (values: INotePayload) => {
-    // console.log('e', e);
+  const onSubmit = (values: INotePayload) => {
+    // HAPUS NANTI
     const tembuss = false;
     let payload: INotePayload;
 
@@ -124,57 +136,22 @@ const MainView: React.FC<MainProps> = props => {
     }
 
     // console.log('payload', payload);
+    const next = (res: any) => {
+      loadSingleNote(res.data.data);
+      loadAllNotes();
+    }
 
-    setLoading();
-    let res: AxiosResponse<any>;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
-      }
-    }
     if (singleNote) {
-      res = await ApiCall.put(API_ROUTES.NOTES, singleNote?._id, payload, config)
+      modifyOnApi(API_ROUTES.NOTES, singleNote?._id, payload, next);
     } else {
-      res = await ApiCall.post(API_ROUTES.NOTES, payload, config);
-    }
-    if (res) {
-      if (res.status === 200) {
-        loadSingleNote(res.data.data);
-        loadAllNotes();
-      } else {
-        const err: IError = {
-          status: res.status,
-          statusText: res.statusText,
-          message: res.data.error || 'Error'
-        }
-        setError(err);
-      }
-      resetLoading();
+      postOnApi(API_ROUTES.NOTES, values, true, next);
     }
     if (tembuss) {
     }
   }
 
-  React.useEffect(() => {
-    // console.log('main render');
-    // console.log('getVal', getValues());
-  })
+  /* ============================================ VIEW ================================================ */
 
-  React.useEffect(() => {
-    reset({
-      title: singleNote?.title,
-      note: singleNote?.note,
-      dueDate: singleNote?.dueDate,
-      todo: singleNote?.todo
-    });
-  }, [singleNote, reset])
-
-  // const todos = watch('todo');
-
-  React.useEffect(() => {
-    // console.log('todos', todos)
-  })
   return (
     <Paper className={classes.rightContainer}>
       <form onSubmit={(e) => { e.preventDefault(); handleSubmit(onSubmit)(e);}} style={{height: '100%'}}>
@@ -237,14 +214,18 @@ const MainView: React.FC<MainProps> = props => {
                     </Grid>
 
                     <Grid item xs={12} sm={6} md={12} lg={12} xl={12} style={{ paddingTop: "6px", height: "50%" }}>
-                      <CommentPartial
-                        value={commentField}
-                        handleOnChange={handleOnChange}
-                        comment={commentList}
-                        handleAddList={handleAddList}
-                        handleKeyDown={handleKeyDown}
-                        handleDeleteList={handleDeleteList}
-                      />
+                      {
+                        // HAPUS NANTI
+                        false &&
+                        <CommentPartial
+                          value={commentField}
+                          handleOnChange={handleOnChange}
+                          comment={commentList}
+                          handleAddList={handleAddList}
+                          handleKeyDown={handleKeyDown}
+                          handleDeleteList={handleDeleteList}
+                        />
+                      }
                     </Grid>
                   </Grid>
                 </Grid>

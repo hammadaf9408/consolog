@@ -20,7 +20,6 @@ const NotePartialView: React.FC<NotePartialProps> = props => {
     <Paper style={{ height: "100%" }}>
       <FormControl variant="outlined" className={classes.mainField} style={{width: '100%'}}>
         <OutlinedInput
-          // defaultValue={defaultValue?.note}
           disabled={loading}
           multiline
           fullWidth

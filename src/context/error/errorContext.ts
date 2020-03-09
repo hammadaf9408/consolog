@@ -3,7 +3,6 @@ import { IError } from './IError';
 
 export interface IErrorContext {
   setError: (error: IError) => void;
-  resetError: () => void;
   error: IError;
 }
 

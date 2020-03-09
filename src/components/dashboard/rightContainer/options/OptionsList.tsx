@@ -11,14 +11,11 @@ import { DateTimePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import moment from 'moment';
 import { NotesContext } from 'components/dashboard/context/notes/notesContext';
-import { AxiosResponse } from 'axios';
 import { LoadingContext } from 'context/loading/loadingContext';
-import { ErrorContext } from 'context/error/errorContext';
-import { ApiCall, Cookies } from 'middleware';
-import { API_ROUTES, LOCALNAME } from 'utils/Constant';
-import { IError } from 'context/error/IError';
+import { API_ROUTES } from 'utils/Constant';
 import { INotesDueDate } from 'components/dashboard/context/notes/INotesDueDate';
 import { styles } from 'styles';
+import { useApi } from 'components/hooks/useApi';
 
 interface Props {
   register: any;
@@ -30,19 +27,39 @@ export type OptionsProps
   & Props;
 
 const OptionsListView: React.FC<OptionsProps> = props => {
+
+  /* ============================================ PROPS =============================================== */
+  
   const { initialValue, register, classes } = props;
+  const { deleteOnApi } = useApi();
+  
+  /* ============================================ USESTATE ============================================ */
+  
   const [selectedDate, handleDateChange] = useState<MaterialUiPickersDate>(null);
   const [checkDue, setCheckDue] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
+  /* ============================================ USECONTEXT ========================================== */
+  
   const notesContext = React.useContext(NotesContext);
   const loadingContext = React.useContext(LoadingContext);
-  const errorContext = React.useContext(ErrorContext);
   
   const { singleNote, loadSingleNote, loadAllNotes } = notesContext;
-  const { loading, setLoading, resetLoading } = loadingContext;
-  const { setError } = errorContext;
+  const { loading } = loadingContext;
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  /* ============================================ USEEFFECT =========================================== */
+  
+  React.useEffect(() => {
+    if (initialValue) {
+      handleDateChange(initialValue.date ? moment(initialValue.date) : null)
+      setCheckDue(initialValue.value);
+    } else {
+      handleDateChange(null)
+      setCheckDue(false);
+    }
+  }, [initialValue])
+
+  /* ============================================ OTHERS ============================================== */
 
   const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -51,48 +68,20 @@ const OptionsListView: React.FC<OptionsProps> = props => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const onDelete = async () => {
+  
+  const onDelete = () => {
     setAnchorEl(null);
     if (singleNote) {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
-        }
+      const next = (res: any) => {
+        loadSingleNote();
+        loadAllNotes();
       }
-      setLoading();
-      let res: AxiosResponse<any> = await ApiCall.delete(API_ROUTES.NOTES, singleNote._id, config);
-      if (res) {
-        if (res.status === 200) {
-          loadSingleNote();
-          loadAllNotes();
-        } else {
-          const err: IError = {
-            status: res.status,
-            statusText: res.statusText,
-            message: res.data.error || 'Error'
-          }
-          setError(err);
-        }
-        resetLoading();
-      }
+  
+      deleteOnApi(API_ROUTES.NOTES, singleNote._id, next);
     }
   }
 
-  React.useEffect(() => {
-    // console.log('Option render')
-  })
-
-  React.useEffect(() => {
-    if (initialValue) {
-      handleDateChange(moment(initialValue.date))
-      setCheckDue(initialValue.value);
-    } else {
-      handleDateChange(null)
-      setCheckDue(false);
-    }
-  }, [initialValue])
+  /* ============================================ VIEW ================================================ */
 
   return (
     <div className={classes.options}>
@@ -147,34 +136,42 @@ const OptionsListView: React.FC<OptionsProps> = props => {
         </Fab> */}
         {
           singleNote &&
-          <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} onClick={handleDelete} >
-            <DeleteIcon />
+          <React.Fragment>
+            <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} onClick={handleDelete} >
+              <DeleteIcon />
+            </Fab>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              getContentAnchorEl={undefined}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              classes={{
+                paper: classes.menu
+              }}
+            >
+              <MenuItem className={classes.menuItem} onClick={handleClose}>No, don't</MenuItem>
+              <MenuItem className={classes.menuItemError} onClick={onDelete}>Yes, Delete!</MenuItem>
+            </Menu>
+          </React.Fragment>
+        }
+        {
+          // HAPUS NANTI
+          false &&
+          <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} >
+            <InfoIcon />
           </Fab>
         }
-        <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} >
-          <InfoIcon />
-        </Fab>
       </div>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        classes={{
-          paper: classes.menu
-        }}
-      >
-        <MenuItem className={classes.menuItem} onClick={handleClose}>No, don't</MenuItem>
-        <MenuItem className={classes.menuItemError} onClick={onDelete}>Yes, Delete!</MenuItem>
-      </Menu>
+      
     </div>
   )
 }
