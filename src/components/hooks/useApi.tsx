@@ -9,17 +9,34 @@ import { AlertContext } from 'context/alert/alertContext';
 import { AlertType } from 'context/alert/AlertType';
 
 export const useApi = () => {
-  const config = {
-    NOAUTH: {
+  enum ConfigType {
+    NoAuth = 'noauth',
+    WithAuth = 'withauth'
+  }
+
+  const handleConfig = (type: ConfigType) => {
+    const token = Cookies.get(LOCALNAME.TOKEN);
+    const NoAuth = {
       headers: {
         'Content-Type': 'application/json',
       }
-    },
-    WITHAUTH: {
+    }
+    const WithAuth = {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Cookies.get(LOCALNAME.TOKEN)}`
+        'Authorization': `Bearer ${token}`
       }
+    }
+
+    switch (type) {
+      case ConfigType.NoAuth:
+        return NoAuth;
+
+      case ConfigType.WithAuth:
+        return WithAuth;
+
+      default:
+        return;
     }
   }
 
@@ -43,7 +60,7 @@ export const useApi = () => {
 
   const getOnApi = async (routes: string, next: any) => {
     setLoading();
-    let res: AxiosResponse<any> = await ApiCall.get(routes, config.WITHAUTH); 
+    let res: AxiosResponse<any> = await ApiCall.get(routes, handleConfig(ConfigType.WithAuth)); 
     if (res) {
       if (res.status === 200) {
         next(res);
@@ -56,11 +73,13 @@ export const useApi = () => {
 
   const postOnApi = async (routes: string, values: any, withAuth: boolean, next: any) => {
     setLoading();
-    let res: AxiosResponse<any> = await ApiCall.post(routes, values, withAuth ? config.WITHAUTH : config.NOAUTH); 
+    let res: AxiosResponse<any> = await ApiCall.post(routes, values, withAuth ? handleConfig(ConfigType.WithAuth) : handleConfig(ConfigType.NoAuth)); 
     if (res) {
       if (res.status === 200) {
         next(res);
-        setAlert({type: AlertType.Success, message: 'Success adding a note!'});
+        if (!res.data.token) {
+          setAlert({type: AlertType.Success, message: 'Success adding a note!'});
+        }
       } else {
         handleError(res);
       }
@@ -70,7 +89,7 @@ export const useApi = () => {
 
   const modifyOnApi = async (routes: string, id: string, values: any, next: any) => {
     setLoading();
-    let res: AxiosResponse<any> = await ApiCall.put(routes, id, values, config.WITHAUTH); 
+    let res: AxiosResponse<any> = await ApiCall.put(routes, id, values, handleConfig(ConfigType.WithAuth)); 
     if (res) {
       if (res.status === 200) {
         next(res);
@@ -84,7 +103,7 @@ export const useApi = () => {
 
   const deleteOnApi = async (routes: string, id: string, next: any) => {
     setLoading();
-    let res: AxiosResponse<any> = await ApiCall.delete(routes, id, config.WITHAUTH);
+    let res: AxiosResponse<any> = await ApiCall.delete(routes, id, handleConfig(ConfigType.WithAuth));
     if (res) {
       if (res.status === 200) {
         next(res);
