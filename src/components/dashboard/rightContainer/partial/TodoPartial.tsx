@@ -64,8 +64,10 @@ export const TodoPartial: React.FC<TodoPartialProps> = props => {
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+
     switch (event.key) {
       case 'Enter':
+        event.preventDefault();
         prepend({ name: todo, value: false })
         setItemCheck([false].concat(itemCheck));
         setTodo('');
