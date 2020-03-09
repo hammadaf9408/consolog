@@ -53,19 +53,19 @@ export const App: React.FC<any> = props => {
       <ThemeProvider theme={theme}>        
         <LoadingState>
           <ErrorState>
-            <Router>
-              <Switch>
-                <GlobalContainer>
-                  <Route exact path="/" component={Login} />
-                  <Route exact path="/register" component={Register} />
-                  <NotesState>
-                    <AlertState>
-                      <PrivateRoute path="/home" component={Home} />
-                    </AlertState>
-                  </NotesState>
-                </GlobalContainer>
-              </Switch>
-            </Router>
+            <AlertState>
+              <Router>
+                <Switch>
+                  <GlobalContainer>
+                    <Route exact path="/" component={Login} />
+                    <Route exact path="/register" component={Register} />
+                    <NotesState>
+                        <PrivateRoute path="/home" component={Home} />
+                    </NotesState>
+                  </GlobalContainer>
+                </Switch>
+              </Router>
+            </AlertState>
           </ErrorState>
         </LoadingState>
       </ThemeProvider>
