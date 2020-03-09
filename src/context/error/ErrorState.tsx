@@ -26,20 +26,11 @@ export const ErrorState: React.FC<any> = props => {
       });
     }, 10000)
   }
-
-  // Set error
-  const resetError = () => {
-    dispatch({
-      type: ErrorAction.SET_ERROR,
-      error: initialState
-    });
-  }
   
   return (
     <ErrorContext.Provider
       value={{
         setError,
-        resetError,
         error: state
       }}
     >
