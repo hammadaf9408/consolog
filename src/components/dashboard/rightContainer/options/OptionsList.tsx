@@ -51,7 +51,7 @@ const OptionsListView: React.FC<OptionsProps> = props => {
   
   React.useEffect(() => {
     if (initialValue) {
-      handleDateChange(moment(initialValue.date))
+      handleDateChange(initialValue.date ? moment(initialValue.date) : null)
       setCheckDue(initialValue.value);
     } else {
       handleDateChange(null)
@@ -136,9 +136,32 @@ const OptionsListView: React.FC<OptionsProps> = props => {
         </Fab> */}
         {
           singleNote &&
-          <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} onClick={handleDelete} >
-            <DeleteIcon />
-          </Fab>
+          <React.Fragment>
+            <Fab color="primary" aria-label="add" size="small" className={classes.optionsFabItem} disabled={loading} onClick={handleDelete} >
+              <DeleteIcon />
+            </Fab>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              getContentAnchorEl={undefined}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              classes={{
+                paper: classes.menu
+              }}
+            >
+              <MenuItem className={classes.menuItem} onClick={handleClose}>No, don't</MenuItem>
+              <MenuItem className={classes.menuItemError} onClick={onDelete}>Yes, Delete!</MenuItem>
+            </Menu>
+          </React.Fragment>
         }
         {
           // HAPUS NANTI
@@ -148,26 +171,7 @@ const OptionsListView: React.FC<OptionsProps> = props => {
           </Fab>
         }
       </div>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        classes={{
-          paper: classes.menu
-        }}
-      >
-        <MenuItem className={classes.menuItem} onClick={handleClose}>No, don't</MenuItem>
-        <MenuItem className={classes.menuItemError} onClick={onDelete}>Yes, Delete!</MenuItem>
-      </Menu>
+      
     </div>
   )
 }
